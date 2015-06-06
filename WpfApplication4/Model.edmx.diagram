@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="b12217999ad84400a9a80f20bf82ec87" Name="Diagram1">
+        <EntityTypeShape EntityType="EvalonModel.登录信息表" Width="1.5" PointX="5.75" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EvalonModel.教师信息表" Width="1.5" PointX="0.75" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="EvalonModel.考试信息表" Width="1.5" PointX="3" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="EvalonModel.课程信息表" Width="1.5" PointX="0.75" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EvalonModel.培养计划表" Width="1.5" PointX="3" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EvalonModel.任课信息表" Width="1.5" PointX="3" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="EvalonModel.选课信息表" Width="1.5" PointX="6" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EvalonModel.学生信息表" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EvalonModel.院系信息表" Width="1.5" PointX="0.75" PointY="3.125" IsExpanded="true" />
+        <AssociationConnector Association="EvalonModel.FK_任课信息表_教师信息表" ManuallyRouted="false" />
+        <AssociationConnector Association="EvalonModel.FK_考试信息表_课程信息表" ManuallyRouted="false" />
+        <AssociationConnector Association="EvalonModel.FK_培养计划表_课程信息表" ManuallyRouted="false" />
+        <AssociationConnector Association="EvalonModel.FK_任课信息表_课程信息表" ManuallyRouted="false" />
+        <AssociationConnector Association="EvalonModel.FK_选课信息表_课程信息表" ManuallyRouted="false" />
+        <AssociationConnector Association="EvalonModel.FK_培养计划表_院系信息表" ManuallyRouted="false" />
+        <AssociationConnector Association="EvalonModel.FK_选课信息表_学生信息表" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

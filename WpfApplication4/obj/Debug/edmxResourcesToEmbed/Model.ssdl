@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EvalonModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="登录信息表">
+    <Key>
+      <PropertyRef Name="用户名" />
+    </Key>
+    <Property Name="用户名" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="密码" Type="nvarchar" MaxLength="50" />
+    <Property Name="用户类型" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="教师信息表">
+    <Key>
+      <PropertyRef Name="工号" />
+    </Key>
+    <Property Name="工号" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="姓名" Type="nvarchar" MaxLength="50" />
+    <Property Name="性别" Type="nvarchar" MaxLength="50" />
+    <Property Name="职称" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="考试信息表">
+    <Key>
+      <PropertyRef Name="考试编号" />
+    </Key>
+    <Property Name="考试编号" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="课程号" Type="nvarchar" MaxLength="50" />
+    <Property Name="考试地点" Type="nvarchar" MaxLength="50" />
+    <Property Name="考试时间" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="课程信息表">
+    <Key>
+      <PropertyRef Name="课程号" />
+    </Key>
+    <Property Name="课程号" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="课程名称" Type="nvarchar" MaxLength="50" />
+    <Property Name="学分" Type="int" />
+    <Property Name="学时" Type="int" />
+    <Property Name="上课地点" Type="nvarchar" MaxLength="50" />
+    <Property Name="上课时间" Type="nvarchar" MaxLength="50" />
+    <Property Name="预定人数" Type="int" />
+    <Property Name="已选人数" Type="int" />
+  </EntityType>
+  <EntityType Name="培养计划表">
+    <Key>
+      <PropertyRef Name="计划编号" />
+    </Key>
+    <Property Name="计划编号" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="系号" Type="int" />
+    <Property Name="课程号" Type="nvarchar" MaxLength="50" />
+    <Property Name="学期" Type="int" />
+  </EntityType>
+  <EntityType Name="任课信息表">
+    <Key>
+      <PropertyRef Name="任课编号" />
+    </Key>
+    <Property Name="任课编号" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="工号" Type="nvarchar" MaxLength="50" />
+    <Property Name="课程号" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="选课信息表">
+    <Key>
+      <PropertyRef Name="选课编号" />
+    </Key>
+    <Property Name="选课编号" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="学号" Type="nvarchar" MaxLength="50" />
+    <Property Name="课程号" Type="nvarchar" MaxLength="50" />
+    <Property Name="课程成绩" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="学生信息表">
+    <Key>
+      <PropertyRef Name="学号" />
+    </Key>
+    <Property Name="学号" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="姓名" Type="nvarchar" MaxLength="50" />
+    <Property Name="性别" Type="nvarchar" MaxLength="50" />
+    <Property Name="年龄" Type="int" />
+    <Property Name="系号" Type="int" />
+    <Property Name="籍贯" Type="nvarchar" MaxLength="50" />
+    <Property Name="民族" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="院系信息表">
+    <Key>
+      <PropertyRef Name="系号" />
+    </Key>
+    <Property Name="系号" Type="int" Nullable="false" />
+    <Property Name="院名" Type="nvarchar" MaxLength="50" />
+    <Property Name="系名" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <Association Name="FK_考试信息表_课程信息表">
+    <End Role="课程信息表" Type="Self.课程信息表" Multiplicity="0..1" />
+    <End Role="考试信息表" Type="Self.考试信息表" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="课程信息表">
+        <PropertyRef Name="课程号" />
+      </Principal>
+      <Dependent Role="考试信息表">
+        <PropertyRef Name="课程号" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_培养计划表_课程信息表">
+    <End Role="课程信息表" Type="Self.课程信息表" Multiplicity="0..1" />
+    <End Role="培养计划表" Type="Self.培养计划表" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="课程信息表">
+        <PropertyRef Name="课程号" />
+      </Principal>
+      <Dependent Role="培养计划表">
+        <PropertyRef Name="课程号" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_培养计划表_院系信息表">
+    <End Role="院系信息表" Type="Self.院系信息表" Multiplicity="0..1" />
+    <End Role="培养计划表" Type="Self.培养计划表" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="院系信息表">
+        <PropertyRef Name="系号" />
+      </Principal>
+      <Dependent Role="培养计划表">
+        <PropertyRef Name="系号" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_任课信息表_教师信息表">
+    <End Role="教师信息表" Type="Self.教师信息表" Multiplicity="0..1" />
+    <End Role="任课信息表" Type="Self.任课信息表" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="教师信息表">
+        <PropertyRef Name="工号" />
+      </Principal>
+      <Dependent Role="任课信息表">
+        <PropertyRef Name="工号" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_任课信息表_课程信息表">
+    <End Role="课程信息表" Type="Self.课程信息表" Multiplicity="0..1" />
+    <End Role="任课信息表" Type="Self.任课信息表" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="课程信息表">
+        <PropertyRef Name="课程号" />
+      </Principal>
+      <Dependent Role="任课信息表">
+        <PropertyRef Name="课程号" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_选课信息表_课程信息表">
+    <End Role="课程信息表" Type="Self.课程信息表" Multiplicity="0..1" />
+    <End Role="选课信息表" Type="Self.选课信息表" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="课程信息表">
+        <PropertyRef Name="课程号" />
+      </Principal>
+      <Dependent Role="选课信息表">
+        <PropertyRef Name="课程号" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_选课信息表_学生信息表">
+    <End Role="学生信息表" Type="Self.学生信息表" Multiplicity="0..1" />
+    <End Role="选课信息表" Type="Self.选课信息表" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="学生信息表">
+        <PropertyRef Name="学号" />
+      </Principal>
+      <Dependent Role="选课信息表">
+        <PropertyRef Name="学号" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="EvalonModelStoreContainer">
+    <EntitySet Name="登录信息表" EntityType="Self.登录信息表" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="教师信息表" EntityType="Self.教师信息表" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="考试信息表" EntityType="Self.考试信息表" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="课程信息表" EntityType="Self.课程信息表" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="培养计划表" EntityType="Self.培养计划表" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="任课信息表" EntityType="Self.任课信息表" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="选课信息表" EntityType="Self.选课信息表" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="学生信息表" EntityType="Self.学生信息表" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="院系信息表" EntityType="Self.院系信息表" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_考试信息表_课程信息表" Association="Self.FK_考试信息表_课程信息表">
+      <End Role="课程信息表" EntitySet="课程信息表" />
+      <End Role="考试信息表" EntitySet="考试信息表" />
+    </AssociationSet>
+    <AssociationSet Name="FK_培养计划表_课程信息表" Association="Self.FK_培养计划表_课程信息表">
+      <End Role="课程信息表" EntitySet="课程信息表" />
+      <End Role="培养计划表" EntitySet="培养计划表" />
+    </AssociationSet>
+    <AssociationSet Name="FK_培养计划表_院系信息表" Association="Self.FK_培养计划表_院系信息表">
+      <End Role="院系信息表" EntitySet="院系信息表" />
+      <End Role="培养计划表" EntitySet="培养计划表" />
+    </AssociationSet>
+    <AssociationSet Name="FK_任课信息表_教师信息表" Association="Self.FK_任课信息表_教师信息表">
+      <End Role="教师信息表" EntitySet="教师信息表" />
+      <End Role="任课信息表" EntitySet="任课信息表" />
+    </AssociationSet>
+    <AssociationSet Name="FK_任课信息表_课程信息表" Association="Self.FK_任课信息表_课程信息表">
+      <End Role="课程信息表" EntitySet="课程信息表" />
+      <End Role="任课信息表" EntitySet="任课信息表" />
+    </AssociationSet>
+    <AssociationSet Name="FK_选课信息表_课程信息表" Association="Self.FK_选课信息表_课程信息表">
+      <End Role="课程信息表" EntitySet="课程信息表" />
+      <End Role="选课信息表" EntitySet="选课信息表" />
+    </AssociationSet>
+    <AssociationSet Name="FK_选课信息表_学生信息表" Association="Self.FK_选课信息表_学生信息表">
+      <End Role="学生信息表" EntitySet="学生信息表" />
+      <End Role="选课信息表" EntitySet="选课信息表" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

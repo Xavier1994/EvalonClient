@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="EvalonModelStoreContainer" CdmEntityContainer="EvalonEntities">
+    <EntitySetMapping Name="登录信息表">
+      <EntityTypeMapping TypeName="EvalonModel.登录信息表">
+        <MappingFragment StoreEntitySet="登录信息表">
+          <ScalarProperty Name="用户名" ColumnName="用户名" />
+          <ScalarProperty Name="密码" ColumnName="密码" />
+          <ScalarProperty Name="用户类型" ColumnName="用户类型" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="教师信息表">
+      <EntityTypeMapping TypeName="EvalonModel.教师信息表">
+        <MappingFragment StoreEntitySet="教师信息表">
+          <ScalarProperty Name="工号" ColumnName="工号" />
+          <ScalarProperty Name="姓名" ColumnName="姓名" />
+          <ScalarProperty Name="性别" ColumnName="性别" />
+          <ScalarProperty Name="职称" ColumnName="职称" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="考试信息表">
+      <EntityTypeMapping TypeName="EvalonModel.考试信息表">
+        <MappingFragment StoreEntitySet="考试信息表">
+          <ScalarProperty Name="考试编号" ColumnName="考试编号" />
+          <ScalarProperty Name="课程号" ColumnName="课程号" />
+          <ScalarProperty Name="考试地点" ColumnName="考试地点" />
+          <ScalarProperty Name="考试时间" ColumnName="考试时间" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="课程信息表">
+      <EntityTypeMapping TypeName="EvalonModel.课程信息表">
+        <MappingFragment StoreEntitySet="课程信息表">
+          <ScalarProperty Name="课程号" ColumnName="课程号" />
+          <ScalarProperty Name="课程名称" ColumnName="课程名称" />
+          <ScalarProperty Name="学分" ColumnName="学分" />
+          <ScalarProperty Name="学时" ColumnName="学时" />
+          <ScalarProperty Name="上课地点" ColumnName="上课地点" />
+          <ScalarProperty Name="上课时间" ColumnName="上课时间" />
+          <ScalarProperty Name="预定人数" ColumnName="预定人数" />
+          <ScalarProperty Name="已选人数" ColumnName="已选人数" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="培养计划表">
+      <EntityTypeMapping TypeName="EvalonModel.培养计划表">
+        <MappingFragment StoreEntitySet="培养计划表">
+          <ScalarProperty Name="计划编号" ColumnName="计划编号" />
+          <ScalarProperty Name="系号" ColumnName="系号" />
+          <ScalarProperty Name="课程号" ColumnName="课程号" />
+          <ScalarProperty Name="学期" ColumnName="学期" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="任课信息表">
+      <EntityTypeMapping TypeName="EvalonModel.任课信息表">
+        <MappingFragment StoreEntitySet="任课信息表">
+          <ScalarProperty Name="任课编号" ColumnName="任课编号" />
+          <ScalarProperty Name="工号" ColumnName="工号" />
+          <ScalarProperty Name="课程号" ColumnName="课程号" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="选课信息表">
+      <EntityTypeMapping TypeName="EvalonModel.选课信息表">
+        <MappingFragment StoreEntitySet="选课信息表">
+          <ScalarProperty Name="选课编号" ColumnName="选课编号" />
+          <ScalarProperty Name="学号" ColumnName="学号" />
+          <ScalarProperty Name="课程号" ColumnName="课程号" />
+          <ScalarProperty Name="课程成绩" ColumnName="课程成绩" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="学生信息表">
+      <EntityTypeMapping TypeName="EvalonModel.学生信息表">
+        <MappingFragment StoreEntitySet="学生信息表">
+          <ScalarProperty Name="学号" ColumnName="学号" />
+          <ScalarProperty Name="姓名" ColumnName="姓名" />
+          <ScalarProperty Name="性别" ColumnName="性别" />
+          <ScalarProperty Name="年龄" ColumnName="年龄" />
+          <ScalarProperty Name="系号" ColumnName="系号" />
+          <ScalarProperty Name="籍贯" ColumnName="籍贯" />
+          <ScalarProperty Name="民族" ColumnName="民族" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="院系信息表">
+      <EntityTypeMapping TypeName="EvalonModel.院系信息表">
+        <MappingFragment StoreEntitySet="院系信息表">
+          <ScalarProperty Name="系号" ColumnName="系号" />
+          <ScalarProperty Name="院名" ColumnName="院名" />
+          <ScalarProperty Name="系名" ColumnName="系名" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
