@@ -1,82 +1,307 @@
-﻿<Window x:Class="EvalonClient.StudentWindow"  
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
-        Title="学生管理会话窗口" Height="700" Width="1000" Background="#FF0C7272" Visibility="Visible" Loaded="Window_Loaded">
+﻿<Window x:Class="EvalonClient.Window.StudentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
+        Title="学生管理会话窗口"
+        Width="1000"
+        Height="700"
+        Background="#FF0C7272"
+        Loaded="Window_Loaded"
+        Visibility="Visible">
 
     <Grid>
         <Grid Margin="-10,-10,0,10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="205*"/>
-                <ColumnDefinition Width="291*"/>
+                <ColumnDefinition Width="205*" />
+                <ColumnDefinition Width="291*" />
             </Grid.ColumnDefinitions>
-            <Label Content="教务管理系统 " HorizontalAlignment="Left" Margin="25,27,0,0" VerticalAlignment="Top" FontSize="36" FontFamily="Bell MT" />
-            <Button x:Name="buttonreturn" Click="buttonreturn_Click" Content="返回主页" Grid.Column="1" HorizontalAlignment="Left" Margin="133,96,0,0" VerticalAlignment="Top" Width="115"  Height="32"/>
-            <Button x:Name="buttonchangepassword" Click="buttonchangepassword_Click" Content="修改密码" Grid.Column="1" HorizontalAlignment="Left" Margin="248,96,0,0" VerticalAlignment="Top" Width="115" Height="32"/>
-            <Button x:Name="buttonreflesh" Click="buttonreflesh_Click_1" Content="刷新" Grid.Column="1" HorizontalAlignment="Left" Margin="363,96,0,0" VerticalAlignment="Top" Width="115" Height="32"/>
-            <Button x:Name="buttonquit" Click="buttonquit_Click_1"  Content="退出" Grid.Column="1" HorizontalAlignment="Left" Margin="478,96,-4,0" VerticalAlignment="Top" Width="114" Height="32"/>
-
+            <Label Margin="25,27,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="教务管理系统 "
+                   FontFamily="Bell MT"
+                   FontSize="36" />
             <Grid Grid.ColumnSpan="2" Margin="10,128,0,488">
-                <Button Click="CourseChooseBtn" Content="学生选课" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="168" Height="47" FontSize="25"/>
-                <Button Click="PersonalInfoBtn"  Content="个人信息" HorizontalAlignment="Left" Margin="163,0,0,0" VerticalAlignment="Top" Width="168" Height="47" FontSize="25"/>
-                <Button Content="查询统计" HorizontalAlignment="Left" Margin="331,0,0,0" VerticalAlignment="Top" Width="168" Height="47" FontSize="25"/>
-                <Button Click="testViewClick" Content="考试安排" HorizontalAlignment="Left" Margin="488,0,0,0" VerticalAlignment="Top" Width="168" Height="47" FontSize="25"/>
-                <Button Content="课程管理" HorizontalAlignment="Left" Margin="656,0,0,0" VerticalAlignment="Top" Width="168" Height="47" FontSize="25"/>
-                <Button Click="TrainingPlanBtn"   Content="培养计划" HorizontalAlignment="Left" Margin="824,0,0,0" VerticalAlignment="Top" Width="170" Height="47" FontSize="25"/>
+                <Button Width="168"
+                        Height="47"
+                        Margin="0,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="CourseChooseBtn"
+                        Content="学生选课"
+                        FontSize="25" />
+                <Button Width="168"
+                        Height="47"
+                        Margin="163,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="PersonalInfoBtn"
+                        Content="个人信息"
+                        FontSize="25" />
+                <Button x:Name="ScoreSearchInfoViewBtn"
+                        Width="168"
+                        Height="47"
+                        Margin="331,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="ScoreSearchInfoViewbtnClick"
+                        Content="成绩查询"
+                        FontSize="25" />
+                <Button Width="168"
+                        Height="47"
+                        Margin="488,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="testViewClick"
+                        Content="考试安排"
+                        FontSize="25" />
+                <Button Width="168"
+                        Height="47"
+                        Margin="656,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Content="课程管理"
+                        FontSize="25" />
+                <Button Width="170"
+                        Height="47"
+                        Margin="824,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="TrainingPlanBtn"
+                        Content="培养计划"
+                        FontSize="25" />
 
 
             </Grid>
-            <TextBlock x:Name="TM" Grid.Column="1" Text="" HorizontalAlignment="Left" Margin="154,39,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="19" Width="150" FontSize="16"><Run Language="zh-cn" Text=""/></TextBlock>
-            <TextBlock x:Name="WK" Grid.Column="1" Text="" HorizontalAlignment="Left" Margin="309,39,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16"/>
-            <TextBlock x:Name="SN" Grid.Column="1" Text="欢迎您," HorizontalAlignment="Left" Margin="418,39,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16"/>
-
-            <Grid x:Name="ChangePassword" Background="White" Margin="14,171,-4,-9" Grid.ColumnSpan="2" Visibility="Hidden" Height="511" VerticalAlignment="Top">
-                <Label Content="原密码" HorizontalAlignment="Left" Margin="377,122,0,0" VerticalAlignment="Top"/>
-                <PasswordBox x:Name="OldPwd" HorizontalAlignment="Left" Margin="452,126,0,0" VerticalAlignment="Top" Width="138"/>
-                <Label Content="新密码" HorizontalAlignment="Left" Margin="377,171,0,0" VerticalAlignment="Top"/>
-                <PasswordBox x:Name="NewPwd" HorizontalAlignment="Left" Margin="452,175,0,0" VerticalAlignment="Top" Width="138"/>
-                <Label Content="确认密码" HorizontalAlignment="Left" Margin="377,216,0,0" VerticalAlignment="Top"/>
-                <PasswordBox x:Name="ConPwd" HorizontalAlignment="Left" Margin="452,220,0,0" VerticalAlignment="Top" Width="138"/>
-                <Button Click="ConfirmChange_Click" Content="确认修改" HorizontalAlignment="Left" Margin="481,276,0,0" VerticalAlignment="Top" Width="75"/>
+            <Grid x:Name="ChangePassword"
+                  Grid.ColumnSpan="2"
+                  Height="511"
+                  Margin="14,171,-4,-9"
+                  VerticalAlignment="Top"
+                  Background="White"
+                  Visibility="Hidden">
+                <Label Margin="377,122,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="原密码" />
+                <PasswordBox x:Name="OldPwd"
+                             Width="138"
+                             Margin="452,126,0,0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Top" />
+                <Label Margin="377,171,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="新密码" />
+                <PasswordBox x:Name="NewPwd"
+                             Width="138"
+                             Margin="452,175,0,0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Top" />
+                <Label Margin="377,216,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="确认密码" />
+                <PasswordBox x:Name="ConPwd"
+                             Width="138"
+                             Margin="452,220,0,0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Top" />
+                <Button Width="75"
+                        Margin="481,276,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="ConfirmChange_Click"
+                        Content="确认修改" />
             </Grid>
 
-            <Grid x:Name="PersonalInfo" Margin="10,171,0,-9" Background="AliceBlue" Grid.ColumnSpan="2" Height="511" VerticalAlignment="Top" Visibility="Hidden">
-                <Label Content="个人信息显示" HorizontalAlignment="Left" Margin="422,32,0,0" VerticalAlignment="Top" FontSize="30" FontWeight="Bold"/>
-                <TextBlock x:Name="Myname"   HorizontalAlignment="Left" Margin="450,105,0,0" TextWrapping="Wrap" Text="姓名：" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
-                <TextBlock x:Name="Myid"   HorizontalAlignment="Left" Margin="450,140,0,0" TextWrapping="Wrap" Text="学号：" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
-                <TextBlock x:Name="Mysex"  HorizontalAlignment="Left" Margin="450,175,0,0" TextWrapping="Wrap" Text="性别：" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
-                <TextBlock x:Name="Myage"   HorizontalAlignment="Left" Margin="450,210,0,0" TextWrapping="Wrap" Text="年龄：" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
-                <TextBlock x:Name="Mymajor"  HorizontalAlignment="Left" Margin="450,281,0,0" TextWrapping="Wrap" Text="专业: " VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
-                <TextBlock x:Name="Myplace"  HorizontalAlignment="Left" Margin="450,318,0,0" TextWrapping="Wrap" Text="籍贯：" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
-                <TextBlock x:Name="Mynation"  HorizontalAlignment="Left" Margin="450,359,0,0" TextWrapping="Wrap" Text="民族：" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
-                <Label Content="以上个人信息学生不可更改，如有错误，请联系教务处相关负责部门进行更改，确保个人信息无误" HorizontalAlignment="Left" Margin="235,407,0,0" VerticalAlignment="Top" Background="Red"/>
-                <TextBlock x:Name="Mycollege"  HorizontalAlignment="Left" Margin="450,249,0,0" TextWrapping="Wrap" Text="学院：" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
+            <Grid x:Name="PersonalInfo"
+                  Grid.ColumnSpan="2"
+                  Height="511"
+                  Margin="10,171,0,-9"
+                  VerticalAlignment="Top"
+                  Background="AliceBlue"
+                  Visibility="Hidden">
+                <Label Margin="422,32,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="个人信息显示"
+                       FontSize="30"
+                       FontWeight="Bold" />
+                <TextBlock x:Name="Myname"
+                           Margin="450,105,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Text="姓名："
+                           TextWrapping="Wrap" />
+                <TextBlock x:Name="Myid"
+                           Margin="450,140,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Text="学号："
+                           TextWrapping="Wrap" />
+                <TextBlock x:Name="Mysex"
+                           Margin="450,175,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Text="性别："
+                           TextWrapping="Wrap" />
+                <TextBlock x:Name="Myage"
+                           Margin="450,210,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Text="年龄："
+                           TextWrapping="Wrap" />
+                <TextBlock x:Name="Mymajor"
+                           Margin="450,281,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Text="专业: "
+                           TextWrapping="Wrap" />
+                <TextBlock x:Name="Myplace"
+                           Margin="450,318,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Text="籍贯："
+                           TextWrapping="Wrap" />
+                <TextBlock x:Name="Mynation"
+                           Margin="450,359,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Text="民族："
+                           TextWrapping="Wrap" />
+                <Label Margin="235,407,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Background="Red"
+                       Content="以上个人信息学生不可更改，如有错误，请联系教务处相关负责部门进行更改，确保个人信息无误" />
+                <TextBlock x:Name="Mycollege"
+                           Margin="450,249,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Text="学院："
+                           TextWrapping="Wrap" />
             </Grid>
 
-            <Grid x:Name="CourseInfo" Margin="10,171,0,-9" Background="AliceBlue" Grid.ColumnSpan="2" Height="511" VerticalAlignment="Top" RenderTransformOrigin="0.523,0.49" Visibility="Hidden" >
+            <Grid x:Name="CourseInfo"
+                  Grid.ColumnSpan="2"
+                  Height="511"
+                  Margin="10,171,0,-9"
+                  VerticalAlignment="Top"
+                  Background="AliceBlue"
+                  RenderTransformOrigin="0.523,0.49"
+                  Visibility="Hidden">
 
-                <DataGrid x:Name="dataGrid" CanUserAddRows="False" SelectionMode="Extended" SelectionUnit="FullRow"   HorizontalAlignment="Right" Margin="0,56,424,0" VerticalAlignment="Top" Height="384" Width="568">
-                </DataGrid>
-                <Label  Content="课程信息显示" HorizontalAlignment="Left" Margin="128,10,0,0" VerticalAlignment="Top" FontSize="26.667" FontFamily="STHupo"/>
-                <Button x:Name="courseconfirm" Click="courseconfirm_Click"  Content="确定选课" HorizontalAlignment="Left" Margin="128,467,0,0" VerticalAlignment="Top" Width="75"/>
-                <Button x:Name="coursedelete" Click="coursedelete_click" Content="确定退课" HorizontalAlignment="Left" Margin="723,460,0,0" VerticalAlignment="Top" Width="75"/>
-                <DataGrid x:Name="dataGrid1"  CanUserAddRows="False"  HorizontalAlignment="Left" Margin="585,56,0,0" VerticalAlignment="Top" Height="384" Width="407"/>
-                <Label  Content="已选课程" HorizontalAlignment="Left" Margin="723,10,0,0" VerticalAlignment="Top" FontSize="26.667" FontFamily="STHupo"/>
-                <Button Click="ShowMyCourseTable" Content="我的课表" HorizontalAlignment="Left" Margin="274,467,0,0" VerticalAlignment="Top" Width="58"/>
+                <DataGrid x:Name="dataGrid"
+                          Width="568"
+                          Height="384"
+                          Margin="0,56,424,0"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Top"
+                          CanUserAddRows="False"
+                          SelectionMode="Extended"
+                          SelectionUnit="FullRow" />
+                <Label Margin="128,10,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="课程信息显示"
+                       FontFamily="STHupo"
+                       FontSize="26.667" />
+                <Button x:Name="courseconfirm"
+                        Width="75"
+                        Margin="128,467,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="courseconfirm_Click"
+                        Content="确定选课" />
+                <Button x:Name="coursedelete"
+                        Width="75"
+                        Margin="723,460,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="coursedelete_click"
+                        Content="确定退课" />
+                <DataGrid x:Name="dataGrid1"
+                          Width="407"
+                          Height="384"
+                          Margin="585,56,0,0"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
+                          CanUserAddRows="False" />
+                <Label Margin="723,10,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="已选课程"
+                       FontFamily="STHupo"
+                       FontSize="26.667" />
+                <Button Width="58"
+                        Margin="274,467,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="ShowMyCourseTable"
+                        Content="我的课表" />
 
 
 
             </Grid>
 
-            <Grid x:Name="MyTestView" Background="AliceBlue" Margin="10,171,0,-9" Grid.ColumnSpan="2" Visibility="Hidden">
-                <DataGrid x:Name="testGrid" HorizontalAlignment="Left" Margin="192,103,0,0" VerticalAlignment="Top" Height="334" Width="480"/>
-                <Label Content="我的考试安排" HorizontalAlignment="Left" Margin="346,27,0,0" VerticalAlignment="Top" FontSize="26.667" FontFamily="Snap ITC"/>
+            <Grid x:Name="MyTestView"
+                  Grid.ColumnSpan="2"
+                  Margin="10,171,0,-9"
+                  Background="AliceBlue"
+                  Visibility="Hidden">
+                <Label Margin="346,27,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="我的考试安排"
+                       FontFamily="Snap ITC"
+                       FontSize="26.667" />
+                <c1:C1DataGrid x:Name="testGrid"
+                               Width="480"
+                               Height="330"
+                               Margin="192,103,0,0"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               CanUserAddRows="False"
+                               CanUserEditRows="False"
+                               CanUserRemoveRows="False" />
 
 
             </Grid>
 
-            <Grid x:Name="TrainingPlan"  Background="AliceBlue" Margin="14,171,-4,-9" Grid.ColumnSpan="2" Visibility="Hidden">
-                <Label Content="查看我的培养计划" HorizontalAlignment="Left" Margin="373,29,0,0" VerticalAlignment="Top" FontSize="26.667" FontFamily="Tw Cen MT Condensed Extra Bold" />
-                <DataGrid x:Name="PlanTable" HorizontalAlignment="Left" Margin="182,90,0,0" VerticalAlignment="Top" Height="402" Width="661"/>
+            <Grid x:Name="TrainingPlan"
+                  Grid.ColumnSpan="2"
+                  Margin="14,171,-4,-9"
+                  Background="AliceBlue"
+                  Visibility="Hidden">
+                <Label Margin="373,29,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="查看我的培养计划"
+                       FontFamily="Tw Cen MT Condensed Extra Bold"
+                       FontSize="26.667" />
+                <c1:C1DataGrid x:Name="PlanTable"
+                               Width="661"
+                               Height="396"
+                               Margin="182,90,0,0"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top" />
 
             </Grid>
 
@@ -85,10 +310,112 @@
 
 
 
+            <Button x:Name="buttonreturn"
+                    Grid.Column="1"
+                    Width="115"
+                    Height="32"
+                    Margin="133,96,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="buttonreturn_Click"
+                    Content="返回主页" />
+            <Button x:Name="buttonchangepassword"
+                    Grid.Column="1"
+                    Width="115"
+                    Height="32"
+                    Margin="248,96,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="buttonchangepassword_Click"
+                    Content="修改密码" />
+            <Button x:Name="buttonreflesh"
+                    Grid.Column="1"
+                    Width="115"
+                    Height="32"
+                    Margin="363,96,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="刷新" />
+            <Button x:Name="buttonquit"
+                    Grid.Column="1"
+                    Width="114"
+                    Height="32"
+                    Margin="478,96,-4,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="buttonquit_Click"
+                    Content="退出" />
+
+            <TextBlock x:Name="TM"
+                       Grid.Column="1"
+                       Width="150"
+                       Height="19"
+                       Margin="154,39,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="16"
+                       Text=""
+                       TextWrapping="Wrap"><Run Language="zh-cn" Text="" />
+            </TextBlock>
+            <TextBlock x:Name="WK"
+                       Grid.Column="1"
+                       Margin="309,39,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="16"
+                       Text=""
+                       TextWrapping="Wrap" />
+            <TextBlock x:Name="SN"
+                       Grid.Column="1"
+                       Margin="418,39,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="16"
+                       Text="欢迎您,"
+                       TextWrapping="Wrap" />
+
+        </Grid>
+
+        <Grid x:Name="SScoreSearchInfoView"
+              Margin="0,164,0,0"
+              Background="AliceBlue"
+              Visibility="Hidden">
+            <c1:C1Tile Width="314"
+                       Height="74"
+                       Margin="333,48,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="查看我的成绩"
+                       FontSize="25"
+                       FontWeight="Bold"
+                       c1:C1TileService.PointerDownAnimation="True" />
+            <Label Margin="396,148,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="学期"
+                   RenderTransformOrigin="0.912,0.542" />
+            <Button x:Name="ScoreSearchConfirmBtn"
+                    Width="62"
+                    Margin="530,150,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="scoreSearchConfirmBtnClick"
+                    Content="确认查看" />
+            <c1:C1DataGrid x:Name="SScoreSearchGrid"
+                           Width="441"
+                           Height="280"
+                           Margin="262,193,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top" />
+            <c1:C1NumericBox x:Name="ScoreSearchNumericBox"
+                             Width="78"
+                             Margin="435,150,0,0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Top" />
         </Grid>
 
 
 
 
     </Grid>
-</Window>  
+</Window>

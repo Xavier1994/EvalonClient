@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-E:\CProjects\Evalon\WpfApplication4\obj\Debug\
+E:\CSharpProjects\EvalonClient\WpfApplication4\obj\Debug\
 EvalonClient
 none
 false
 DEBUG;TRACE
-E:\CProjects\Evalon\WpfApplication4\App.xaml
+E:\CSharpProjects\EvalonClient\WpfApplication4\App.xaml
 41706755935
 3845798058
 291718991177
-20-398806019
+27-1709244388
 Window\CourseWindow.xaml;MainWindow.xaml;Window\StudentWindow.xaml;Window\TeacherWindow.xaml;
 
 False

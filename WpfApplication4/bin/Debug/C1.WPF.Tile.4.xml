@@ -1,0 +1,380 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>C1.WPF.Tile.4</name>
+  </assembly>
+  <members>
+    <member name="T:C1.WPF.Tile.C1TileBase">
+      <summary>
+            Provides the base implementation for all tile controls.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileBase.OnCreateAutomationPeer">
+      <summary>
+            Gets an AutomationPeer object used for testing the control.
+            </summary>
+      <returns>An AutomationPeer object used for testing the control.</returns>
+    </member>
+    <member name="F:C1.WPF.Tile.C1TileBase.CommandProperty">
+      <summary>
+            Identifies the <see cref="P:C1.WPF.Tile.C1TileBase.Command" /> dependency property. 
+            </summary>
+    </member>
+    <member name="F:C1.WPF.Tile.C1TileBase.CommandParameterProperty">
+      <summary>
+            Identifies the <see cref="P:C1.WPF.Tile.C1TileBase.CommandParameter" /> dependency property. 
+            </summary>
+    </member>
+    <member name="F:C1.WPF.Tile.C1TileBase.IsFrozenProperty">
+      <summary>
+            Identifies the <see cref="P:C1.WPF.Tile.C1TileBase.IsFrozen" /> dependency property.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileBase.#ctor">
+      <summary>
+            Initializes the new instance of the <see cref="T:C1.WPF.Tile.C1TileBase" /> control.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileBase.OnLoaded">
+      <summary>
+            Registers the current <see cref="T:C1.WPF.Tile.C1TileBase" /> object in the <see cref="T:C1.WPF.Tile.C1TileService" /> to enable timing updates.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileBase.OnUnloaded">
+      <summary>
+            Unregisters the current <see cref="T:C1.WPF.Tile.C1TileBase" /> object in the <see cref="T:C1.WPF.Tile.C1TileService" /> to disable tile updates.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileBase.ChangeVisualStateCommon(System.Boolean)">
+      <summary>
+            Updates the current visual state of the Common visual state group to match the object's properties.
+            </summary>
+      <param name="useTransitions">
+      </param>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileBase.UpdateTile">
+      <summary>
+            When overridden in derived class, performs tile update.
+            </summary>
+      <remarks>The <see cref="T:C1.WPF.Tile.C1TileService" /> calls this method for each registered <see cref="T:C1.WPF.Tile.C1TileBase" /> object.</remarks>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileBase.UpdateCanExecuteState">
+      <summary>
+            If <see cref="P:C1.WPF.Tile.C1TileBase.Command" /> property is set, calls ICommand.CanExecute method and updates IsEnabled property accordingly.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileBase.ToString">
+      <summary>
+            Returns Header if it is a <see cref="T:System.String" /> value;
+            </summary>
+      <returns>
+      </returns>
+    </member>
+    <member name="P:C1.WPF.Tile.C1TileBase.Command">
+      <summary>
+            Gets or sets the command to invoke when this button is pressed.
+            </summary>
+    </member>
+    <member name="P:C1.WPF.Tile.C1TileBase.CommandParameter">
+      <summary>
+            Gets or sets the parameter to pass to the <see cref="P:C1.WPF.Tile.C1TileBase.Command" /> property.
+            </summary>
+    </member>
+    <member name="P:C1.WPF.Tile.C1TileBase.IsFrozen">
+      <summary>
+            Gets or sets the <see cref="T:System.Boolean" /> value specifying whether tile updates should be performed on the current <see cref="T:C1.WPF.Tile.C1TileBase" /> object.
+            This is a dependency property. The default value is false.
+            </summary>
+    </member>
+    <member name="E:C1.WPF.Tile.C1TileBase.Click">
+      <summary>
+            Occurs when a tile control is clicked.
+            </summary>
+    </member>
+    <member name="T:C1.WPF.Tile.SlideDirection">
+      <summary>
+            Describes the set of animation directions in the <see cref="T:C1.WPF.Tile.C1SlideTile" /> control.
+            </summary>
+    </member>
+    <member name="F:C1.WPF.Tile.SlideDirection.Up">
+      <summary>
+            Bottom to top.
+            </summary>
+    </member>
+    <member name="F:C1.WPF.Tile.SlideDirection.Left">
+      <summary>
+            Right to left.
+            </summary>
+    </member>
+    <member name="F:C1.WPF.Tile.SlideDirection.Down">
+      <summary>
+            Top to bottom.
+            </summary>
+    </member>
+    <member name="F:C1.WPF.Tile.SlideDirection.Right">
+      <summary>
+            Left to right.
+            </summary>
+    </member>
+    <member name="F:C1.WPF.Tile.SlideDirection.All">
+      <summary>
+            All.
+            </summary>
+    </member>
+    <member name="T:C1.WPF.Tile.C1SlideTile">
+      <summary>
+            The <see cref="T:C1.WPF.Tile.C1SlideTile" /> control slides from front to back according to the <see cref="P:C1.WPF.Tile.C1SlideTile.SlideDirection" /> property value.
+            </summary>
+      <remarks>The <see cref="P:C1.WPF.Tile.C1SlideTile.SlideDirection" /> property might contain any combination of the <see cref="P:C1.WPF.Tile.C1SlideTile.SlideDirection" /> values.
+            The <see cref="T:C1.WPF.Tile.C1Tile" /> control will randomly slide in the one of available directions.</remarks>
+    </member>
+    <member name="T:C1.WPF.Tile.C1Tile">
+      <summary>
+            The <see cref="T:C1.WPF.Tile.C1Tile" /> is an animated headered content control which mimics Windows 8 live tiles behavior.
+            </summary>
+      <remarks>ContentChange storyboards must be defined in the root element resources.
+            To define multiple ContentChange storyboards, set storyboard Key value to any string starting with 
+            C1Tile.ContentChangeAnimationName.
+            If control template defines multiple storyboards, the <see cref="T:C1.WPF.Tile.C1Tile" /> control will run corresponding storyboards randomly.</remarks>
+    </member>
+    <member name="F:C1.WPF.Tile.C1Tile._root">
+      <summary>
+            The root element of the control template visual tree.
+            </summary>
+    </member>
+    <member name="F:C1.WPF.Tile.C1Tile._contentChangeAnimations">
+      <summary>
+            Keeps the list of storyboards found in the ControlTemplate.
+            </summary>
+    </member>
+    <member name="F:C1.WPF.Tile.C1Tile.BackContentProperty">
+      <summary>
+            Identifies the <see cref="P:C1.WPF.Tile.C1Tile.BackContent" /> dependency property.
+            </summary>
+    </member>
+    <member name="F:C1.WPF.Tile.C1Tile.BackContentTemplateProperty">
+      <summary>
+            Identifies the <see cref="P:C1.WPF.Tile.C1Tile.BackContentTemplate" /> dependency property.
+            </summary>
+    </member>
+    <member name="F:C1.WPF.Tile.C1Tile.ContentSourceProperty">
+      <summary>
+            Identifies the <see cref="P:C1.WPF.Tile.C1Tile.ContentSource" /> dependency property.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1Tile.#ctor">
+      <summary>
+            Initializes the new instance of the <see cref="T:C1.WPF.Tile.C1Tile" /> control.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1Tile.C1Tile_SizeChanged(System.Object,System.Windows.SizeChangedEventArgs)">
+      <summary>
+            The default implementation sets the C1Tile.Clip property so that to clip it on bounds.
+            </summary>
+      <param name="sender">
+      </param>
+      <param name="e">
+      </param>
+    </member>
+    <member name="M:C1.WPF.Tile.C1Tile.UpdateTile">
+      <summary>
+            Performs tile update according to the ContentSource property value and the set of defined ContentChangeAnimations.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1Tile.AnimateTileContent">
+      <summary>
+            If current <see cref="T:C1.WPF.Tile.C1Tile" /> object is not frozen, runs random storyboard 
+            from the set of storyboards defined in the C1Tile control template which keys are started with "ContentChangeAnimation".
+            </summary>
+      <remarks>Override this method to implement custom animation logic.</remarks>
+    </member>
+    <member name="M:C1.WPF.Tile.C1Tile.OnContentChanged(System.Object,System.Object)">
+      <summary>
+            Called when the Content property changes. 
+            This implementation performs next actions:
+            - places old content into the BackContentPresenter element, 
+            - updates ContentPresenter element with new content, 
+            - updates ContentTemplate if BackContentTemplate or ContentTemplateSelector property is set,
+            - runs tile update animation.
+            </summary>
+      <param name="oldContent">The old value of the Content property.</param>
+      <param name="newContent">The new value of the Content property.</param>
+    </member>
+    <member name="P:C1.WPF.Tile.C1Tile.BackContent">
+      <summary>
+            Gets or sets the <see cref="T:System.Object" /> representing the old content of the <see cref="T:C1.WPF.Tile.C1Tile" /> control.
+            </summary>
+    </member>
+    <member name="P:C1.WPF.Tile.C1Tile.BackContentTemplate">
+      <summary>
+            Gets or sets the <see cref="T:System.Windows.DataTemplate" /> which should be used as an alternate to the one defined by the ContentTemplate property.
+            The default value is null.
+            </summary>
+      <remarks>This property would be ignored if the ContentTemplateSelector property is set.</remarks>
+    </member>
+    <member name="P:C1.WPF.Tile.C1Tile.ContentSource">
+      <summary>
+            Gets or sets an object source used to generate the content of the <see cref="T:C1.WPF.Tile.C1Tile" /> control.
+            </summary>
+    </member>
+    <member name="F:C1.WPF.Tile.C1SlideTile.SlideDirectionProperty">
+      <summary>
+            Identifies the <see cref="P:C1.WPF.Tile.C1SlideTile.SlideDirection" /> dependency property.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1SlideTile.#ctor">
+      <summary>
+            Initializes the new instance of the <see cref="T:C1.WPF.Tile.C1SlideTile" /> control.
+            </summary>
+    </member>
+    <member name="P:C1.WPF.Tile.C1SlideTile.SlideDirection">
+      <summary>
+            Gets or sets the <see cref="P:C1.WPF.Tile.C1SlideTile.SlideDirection" /> value, 
+            determining the set of slide animations which should be applied to the current <see cref="T:C1.WPF.Tile.C1SlideTile" /> control.
+            This is a dependency property. The default value is SlideDirection.All.
+            </summary>
+    </member>
+    <member name="T:C1.WPF.Tile.ILoadable">
+      <summary>
+            Specifies that this object supports loading.
+            </summary>
+      <remarks>Implement this interface in your custom business object if it needs long initialization.
+            The <see cref="T:C1.WPF.Tile.C1Tile" /> control honors this interface and calls <see cref="M:C1.WPF.Tile.ILoadable.Load" /> method 
+            in advance to preload tile data before animation. 
+            Load method might start synchronous or asynchronous load operation.
+            If Load method returns false, C1Tile will delay animations until IsLoaded property is true.</remarks>
+    </member>
+    <member name="M:C1.WPF.Tile.ILoadable.Load">
+      <summary>
+            Starts synchronous or asynchronous load operation.
+            </summary>
+      <returns>Returns true if object has been successfully loaded; otherwise, returns false.</returns>
+    </member>
+    <member name="P:C1.WPF.Tile.ILoadable.IsLoaded">
+      <summary>
+            Gets the <see cref="T:System.Boolean" /> value determining whether object has been loaded.
+            </summary>
+    </member>
+    <member name="T:C1.WPF.Tile.MultiplyConverter">
+      <summary>
+            Represents a Binding converter that multiplies a numeric value by the specified parameter value.
+            </summary>
+      <remarks>
+            The <see cref="T:C1.WPF.Tile.MultiplyConverter" /> is a one-way converter. A source value must be
+            of a numeric type, and a converted value has the same type as a source value.
+            </remarks>
+    </member>
+    <member name="M:C1.WPF.Tile.MultiplyConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+            Converts a value. The data binding engine calls this method 
+            when it propagates a value from the binding source to the binding target. 
+            </summary>
+      <param name="value">The value produced by the binding source.</param>
+      <param name="targetType">The type of the binding target property.</param>
+      <param name="parameter">The converter parameter to use.</param>
+      <param name="culture">The culture to use in the converter.</param>
+      <returns>A converted value.</returns>
+    </member>
+    <member name="M:C1.WPF.Tile.MultiplyConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+            Converts a value. The data binding engine calls this method when it propagates 
+            a value from the binding target to the binding source. 
+            </summary>
+      <param name="value">The value that is produced by the binding target.</param>
+      <param name="targetType">The type to convert to.</param>
+      <param name="parameter">The converter parameter to use.</param>
+      <param name="culture">The culture to use in the converter.</param>
+      <returns>A converted value.</returns>
+    </member>
+    <member name="T:C1.WPF.Tile.C1TileService">
+      <summary>
+            The <see cref="T:C1.WPF.Tile.C1TileService" /> class handles pointer down animations and runs tile updates.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileService.GetPreservePointerCapture(System.Windows.FrameworkElement)">
+      <summary>
+            Gets the value of the PreservePointerCapture attached property from a given FrameworkElement.
+            </summary>
+      <param name="obj">The element from which to read the property value.</param>
+      <returns>The value of the PreservePointerCapture attached property.</returns>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileService.SetPreservePointerCapture(System.Windows.FrameworkElement,System.Boolean)">
+      <summary>
+            Sets the PreservePointerCapture attached property value on the specified element.
+            </summary>
+      <remarks>This property notifies the <see cref="T:C1.WPF.Tile.C1TileService" />, that it should not release pointer capture for the element.
+            Set this property to true in the Control.OnPointerMoved override if the element needs pointer capture for some own functionality (for example, for dragging).</remarks>
+            Don't forget to clear this property value in the Control.OnPointerReleased and Control.OnPointerCaptureLost overrides so that 
+            the <see cref="T:C1.WPF.Tile.C1TileService" /> can correctly release pointer capture for the element.
+            <param name="obj">The element from which to read the property value.</param><param name="value">The property value to set.</param></member>
+    <member name="F:C1.WPF.Tile.C1TileService.PreservePointerCaptureProperty">
+      <summary>
+            Identifies the PreservePointerCapture attached property.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileService.GetPointerDownAnimation(System.Windows.FrameworkElement)">
+      <summary>
+            Gets the value of the PointerDownAnimation attached property from a given FrameworkElement.
+            </summary>
+      <param name="obj">The element from which to read the property value.</param>
+      <returns>The value of the PointerDownAnimation attached property.</returns>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileService.SetPointerDownAnimation(System.Windows.FrameworkElement,System.Boolean)">
+      <summary>
+            Sets the PointerDownAnimation attached property value on the specified element.
+            </summary>
+      <remarks>Set this property to true on the element which should interact with the pointer as Windows 8 live tiles.</remarks>
+      <param name="obj">The element on which to set the attached property.</param>
+      <param name="value">The property value to set.</param>
+    </member>
+    <member name="F:C1.WPF.Tile.C1TileService.PointerDownAnimationProperty">
+      <summary>
+            Identifies the PointerDownAnimation attached property.
+            If this attached property is set on some <see cref="T:System.Windows.FrameworkElement" />, 
+            the <see cref="T:C1.WPF.Tile.C1TileService" /> will perform PointerDown animation for this element.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileService.StopPointerAnimation(System.Windows.FrameworkElement)">
+      <summary>
+            Stops an active PointerDown animation for the specified target.
+            </summary>
+      <param name="target">The FrameworkElement to stop animation.</param>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileService.Register(C1.WPF.Tile.C1TileBase)">
+      <summary>
+            Registers the <see cref="T:C1.WPF.Tile.C1TileBase" /> object in the service.
+            </summary>
+      <remarks>Usually, you don't need to call this method directly, the <see cref="T:C1.WPF.Tile.C1TileBase" /> control does this at loading.</remarks>
+      <param name="tile">The <see cref="T:C1.WPF.Tile.C1TileBase" /> object to register.</param>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileService.Unregister(C1.WPF.Tile.C1TileBase)">
+      <summary>
+            Unregisters the <see cref="T:C1.WPF.Tile.C1TileBase" /> object in the service.
+            </summary>
+      <remarks>Usually, you don't need to call this method directly, the <see cref="T:C1.WPF.Tile.C1TileBase" /> control does this at unloading.</remarks>
+      <param name="tile">The <see cref="T:C1.WPF.Tile.C1TileBase" /> object to unregister.</param>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileService.FreezeTile(C1.WPF.Tile.C1TileBase)">
+      <summary>
+            Freezes tile updates.
+            </summary>
+      <param name="tile">The <see cref="T:C1.WPF.Tile.C1TileBase" /> object to freeze.</param>
+    </member>
+    <member name="M:C1.WPF.Tile.C1TileService.UnfreezeTile(C1.WPF.Tile.C1TileBase)">
+      <summary>
+            Unfreezes tile updates.
+            </summary>
+      <param name="tile">The <see cref="T:C1.WPF.Tile.C1TileBase" /> object to unfreeze.</param>
+    </member>
+    <member name="P:C1.WPF.Tile.C1TileService.MaxAnimationNumber">
+      <summary>
+            Gets or sets the <see cref="T:System.Int32" /> value specifying the maximum number of tile animations which might be performed simultaniously.
+            </summary>
+    </member>
+    <member name="P:C1.WPF.Tile.C1TileService.UpdateInterval">
+      <summary>
+            Gets or sets the <see cref="T:System.TimeSpan" /> value specifying the maximum time interval between tile updates.
+            </summary>
+    </member>
+  </members>
+</doc>

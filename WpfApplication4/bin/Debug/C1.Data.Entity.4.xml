@@ -1,0 +1,1704 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>C1.Data.Entity.4</name>
+  </assembly>
+  <members>
+    <member name="T:C1.Data.ClientCacheBase">
+      <summary>
+            Represents the client-side cache, the central hub of data access in the Studio for Entity Framework.
+            </summary>
+      <remarks>
+        <para>
+            Usually, a single instance of this class is created on application startup with an ObjectContext/DomainContext as a parameter
+            and exists during the entire application lifetime,
+            while each form, window, or user control works with data using a <see cref="T:C1.Data.ClientScope" /> created by calling the <see cref="M:C1.Data.ClientCacheBase.CreateScope" /> method.
+            </para>
+        <para>
+            It is the base class for platform-specific implementations, such as 
+            C1.Data.Entities.EntityClientCache (Entity Framework), 
+            C1.Silverlight.Data.RiaServices.RiaClientCache (RIA Services).
+            </para>
+      </remarks>
+    </member>
+    <member name="M:C1.Data.ClientCacheBase.CreateScope">
+      <summary>
+            Creates a <see cref="T:C1.Data.ClientScope" /> that defines a scope of data access.
+            </summary>
+      <remarks>
+            Usually, every form, window, or user control creates a <see cref="T:C1.Data.ClientScope" /> and uses it 
+            to access entities.
+            </remarks>
+      <returns>A new <see cref="T:C1.Data.ClientScope" />.</returns>
+      <seealso cref="T:C1.Data.ClientScope" />
+    </member>
+    <member name="M:C1.Data.ClientCacheBase.Clear">
+      <summary>
+            Clears client-side cache entirely. Call this method if you want to make sure that following queries will fetch fresh data
+            from the server.
+            </summary>
+    </member>
+    <member name="M:C1.Data.ClientCacheBase.Refresh">
+      <summary>
+            Refreshes data in all C1DataSource controls connected to this ClientCacheBase.
+            </summary>
+      <remarks>
+            This method calls C1DataSource.Refresh() for every C1DataSource connected to this ClientCacheBase.
+            Changes made on the client are preserved.
+            </remarks>
+    </member>
+    <member name="M:C1.Data.ClientCacheBase.CleanupCache">
+      <summary>
+            Forces unused memory to be released, unused entities to be detached from the context.
+            It is usually done automatically, so programmers rarely need to call this method in code.
+            </summary>
+    </member>
+    <member name="M:C1.Data.ClientCacheBase.CreateTransaction">
+      <summary>
+            Creates a <see cref="T:C1.Data.Transactions.ClientTransaction" /> that allows you to easily cancel changes
+            made in transaction scope.
+            </summary>
+      <returns>A new <see cref="T:C1.Data.Transactions.ClientTransaction" /></returns>
+    </member>
+    <member name="M:C1.Data.ClientCacheBase.BulkChanges(System.Action)">
+      <summary>
+            Used to group massive changes to entities and to allow manual explicit changes of entity states.
+            </summary>
+      <remarks>
+        <para>
+            Internal state of the client-side cache and all existing <see cref="T:C1.Data.ClientView`1">client views</see> based on the cache
+            are kept unchanged, aren't updated while the given <paramref name="makeChanges">delegate</paramref> is executed.
+            After the delegate completes its execution (having modified multiple entities),
+            the client-side cache internal state is restored and client views
+            are updated (maintained) to reflect the changes made in entities during the delegate's execution.
+            </para>
+        <para>There are two main scenarios where you should consider calling this method:</para>
+        <list type="number">
+          <item>
+            Using this method when you make a lot of changes to entities can improve performance 
+            because the change processing is deferred, occurs only once after all changes are done instead of every time on each change.
+            Depending on the amount of changes, the speedup can be considerable.
+            </item>
+          <item>
+            You must use this method when you need to make changes to entity states by calling any of the following methods:
+            <list type="bullet"><item>System.Data.Objects.ObjectStateEntry.ChangeState/SetModified/AcceptChanges,</item><item>System.Data.Objects.ObjectContext.AcceptAllChanges,</item><item>System.ServiceModel.DomainServices.Client.DomainContext.RejectChanges,</item><item>System.ServiceModel.DomainServices.Client.Entity.AcceptChanges/RejectChanges,</item><item>System.ServiceModel.DomainServices.Client.EntitySet.AcceptChanges/RejectChanges,</item><item>System.Windows.Controls.DomainDataSource.RejectChanges.</item></list></item>
+        </list>
+            Calling these methods without wrapping them with <see cref="M:C1.Data.ClientCacheBase.BulkChanges(System.Action)" /> can corrupt the client-side cache.
+            </remarks>
+      <example>
+        <code>
+            var scope = clientCache.CreateScope();
+            clientCache.BulkChanges(delegate {
+                foreach(var detail in scope.GetItems&lt;Order_Details&gt;)
+                    detail.Discount *= 2;
+            });
+            </code>
+      </example>
+      <param name="makeChanges">A delegate that makes changes in entities.</param>
+    </member>
+    <member name="M:C1.Data.ClientCacheBase.SaveChanges">
+      <summary>
+            Persists all changes to the server. It is recommended to call this method instead of 
+            <see cref="!:System.Data.Objects.ObjectContext.SaveChanges()" />.
+            </summary>
+    </member>
+    <member name="M:C1.Data.ClientCacheBase.RejectChanges">
+      <summary>
+            Reverts all pending changes for this <see cref="T:C1.Data.ClientCacheBase" />.
+            It is recommended to call this method instead of <see cref="!:System.Data.Objects.ObjectContext.Refresh(System.Data.Objects.RefreshMode, object)" />.
+            </summary>
+    </member>
+    <member name="T:C1.Data.ClientScope">
+      <summary>
+            Defines a scope of data access. Provides facilities to create <see cref="T:C1.Data.ClientView`1">client views</see>.
+            </summary>
+      <remarks>
+        <para>
+            Usually, one scope is created per form/window.
+            Entities <see cref="M:C1.Data.ClientScope.AddRef(System.Object)">pinned to the scope (marked as needed)</see> are not evicted from the cache 
+            until the scope is <see cref="M:C1.Data.ClientScope.Dispose">disposed</see> or collected by the garbage collector.
+            </para>
+        <para>
+            This class is a base class for platform-specific scopes, such as C1.Data.Entities.EntityClientCache (Entity Framework)
+            and C1.Silverlight.Data.RiaServices.RiaClientCache (RIA Services).
+            </para>
+      </remarks>
+    </member>
+    <member name="M:C1.Data.ClientScope.#ctor(C1.Data.ClientCacheBase)">
+      <summary>
+            Initializes a new instance of <see cref="T:C1.Data.ClientScope" /> class with the given <see cref="T:C1.Data.ClientCacheBase" />.
+            </summary>
+      <param name="clientCache">An instance of the <see cref="T:C1.Data.ClientCacheBase" /> class to which the new <see cref="T:C1.Data.ClientScope">client scope</see>is connected.</param>
+    </member>
+    <member name="M:C1.Data.ClientScope.Dispose">
+      <summary>
+            Marks the scope as disposed. Entities that were marked needed by a disposed scope may be disposed of (evicted from the cache, detached from context) 
+            unless they are needed by other active scopes. 
+            </summary>
+    </member>
+    <member name="M:C1.Data.ClientScope.AddRef(System.Object)">
+      <summary>
+            Marks an entity as needed. Needed entities are not detached/released from the context
+            until the client scope is disposed.
+            </summary>
+      <remarks>
+            Client views and C1DataSource classes mark entities as needed automatically. Use this method only when you fetch entities using other means,
+            bypassing Studio for EF classes with direct access to the underlying object context.
+            When you no longer need those entities, call <see cref="M:C1.Data.ClientScope.Release(System.Object)" />.
+            AddRef and Release are counting, every AddRef call must be balanced by a Release call.
+            </remarks>
+      <param name="entity">An entity to be marked as needed.</param>
+    </member>
+    <member name="M:C1.Data.ClientScope.Release(System.Object)">
+      <summary>
+            Unmark a needed entity.
+            </summary>
+      <remarks>Calling this method does not release memory by itself. The <paramref name="entity" /> becomes unneeded, so it can be disposed of at cache cleanup time.</remarks>
+      <param name="entity">An entity that was marked as needed using <see cref="M:C1.Data.ClientScope.AddRef(System.Object)" />.</param>
+      <returns>True if the <paramref name="entity" /> was unmarked; otherwise, False (the entity is not unmarked until every AddRef is balanced by a Release).</returns>
+    </member>
+    <member name="M:C1.Data.ClientScope.AddRef(System.Type)">
+      <summary>
+            Mark all entities of a given type as needed. All entities of that type will not be detached from the context until the client scope is disposed.
+            </summary>
+      <param name="entityType">An entity type to mark as needed.</param>
+    </member>
+    <member name="M:C1.Data.ClientScope.Release(System.Type)">
+      <summary>
+            Unmark a needed entity type. Calling this method does not release memory. 
+            </summary>
+      <remarks>Calling this method does not release memory until cache cleanup time.</remarks>
+      <param name="entityType">An entity type that was marked as needed using <see cref="M:C1.Data.ClientScope.AddRef(System.Type)" />.</param>
+      <returns>True if the entity type was unmarked (every Addref was balanced with Release); otherwise, False.</returns>
+    </member>
+    <member name="P:C1.Data.ClientScope.ClientCache">
+      <summary>
+            Gets the <see cref="T:C1.Data.ClientCacheBase" /> to which this <see cref="T:C1.Data.ClientScope">client scope</see> is connected.
+            </summary>
+    </member>
+    <member name="T:C1.Data.ClientView`1">
+      <summary>
+            Represents a <i>client view</i>, that is, a <see cref="T:C1.LiveLinq.LiveViews.View`1">live view</see> that is connected to a remote source,
+            such as an <see cref="!:System.Data.Objects.ObjectContext" />.
+            </summary>
+      <typeparam name="T">The type of the elements in the view.</typeparam>
+    </member>
+    <member name="M:C1.Data.ClientView`1.AsFiltered(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+      <summary>
+            Filters the view on the server side using a <paramref name="predicate" />.
+            </summary>
+      <param name="predicate">A function to apply each element to test the condition.</param>
+      <returns>
+            A <see cref="T:C1.Data.ClientView`1">client view</see> that contains elements of this view that satisfy the <paramref name="predicate">condition</paramref>.
+            </returns>
+    </member>
+    <member name="M:C1.Data.ClientView`1.AsFilteredBound``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+      <summary>
+            Filters the view on the server using a key selector function and configurable 
+            <see cref="P:C1.Data.FilteredView`1.FilterKey">value</see> and 
+            <see cref="P:C1.Data.FilteredView`1.Operator">operator</see>.
+            </summary>
+      <typeparam name="TKey">The type of the value used for filtering.</typeparam>
+      <param name="keySelector">A function that returns a key value for filtering given a view item.</param>
+      <returns>A <see cref="T:C1.Data.FilteredView`1" /> that contains elements of this view that have keys satisfying the condition.</returns>
+    </member>
+    <member name="M:C1.Data.ClientView`1.Include(System.String)">
+      <summary>
+            Specifies related objects to include while loading the <see cref="T:C1.Data.ClientView`1">client view</see>.
+            </summary>
+      <param name="path">A dot-separated list of related objects to load along with the entities of this <see cref="T:C1.Data.ClientView`1">client view</see>.</param>
+      <returns>A <see cref="T:C1.Data.ClientView`1">client view</see> that loads the related objects together with its entities every time it fetches entities from the server.</returns>
+    </member>
+    <member name="M:C1.Data.ClientView`1.Paging``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Int32)">
+      <summary>
+            Applies paging to this <see cref="T:C1.Data.ClientView`1">client view</see>.
+            </summary>
+      <remarks>Sorting is required, paging entities is impossible without sort.</remarks>
+      <param name="sortKeySelector">A function specifying a sort key.</param>
+      <param name="pageSize">A value for the <see cref="P:C1.Data.PagingView`1.PageSize" /> property, the number of items to load in a page.</param>
+      <typeparam name="TKey">The type of the sort key.</typeparam>
+      <returns>A <see cref="T:C1.Data.PagingView`1">paged client view</see>.</returns>
+    </member>
+    <member name="M:C1.Data.ClientView`1.Paging``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Boolean,System.Int32)">
+      <summary>
+            Applies paging to this <see cref="T:C1.Data.ClientView`1">client view</see>.
+            </summary>
+      <remarks>Sorting is required, paging entities is impossible without sort.</remarks>
+      <param name="sortKeySelector">A function specifying a sort key.</param>
+      <param name="ascending">A boolean value indicating whether sorting must be performed in the ascending order (descending, if false).</param>
+      <param name="pageSize">A value for the <see cref="P:C1.Data.PagingView`1.PageSize" /> property, the number of items to load in a page.</param>
+      <typeparam name="TKey">The type of the sort key.</typeparam>
+      <returns>A <see cref="T:C1.Data.PagingView`1">paged client view</see>.</returns>
+    </member>
+    <member name="M:C1.Data.ClientView`1.ProgressiveLoading``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Int32)">
+      <summary>
+            Specifies that the <see cref="T:C1.Data.ClientView`1">client view</see> loading is performed not in a single trip to the server but 
+            in multiple batches, each loading a page of a limited size so the user sees the result and can interact with it before all pages are loaded.
+            </summary>
+      <remarks>Sorting is required, loading entities progressively is impossible without sort.</remarks>
+      <param name="sortKeySelector">A function specifying a sort key.</param>
+      <param name="loadSize">The size of the page.</param>
+      <typeparam name="TKey">The type of the sort key.</typeparam>
+      <returns>A <see cref="T:C1.Data.ProgressiveView`1">client view</see> that loads the same entities as the source view but does it progressively.</returns>
+    </member>
+    <member name="M:C1.Data.ClientView`1.ProgressiveLoading``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Boolean,System.Int32)">
+      <summary>
+            Specifies that the <see cref="T:C1.Data.ClientView`1">client view</see> loading is performed not in a single trip to the server but 
+            in multiple batches, each loading a page of a limited size so the user sees the result and can interact with it before all pages are loaded.
+            </summary>
+      <remarks>Sorting is required, loading entities progressively is impossible without sort.</remarks>
+      <param name="sortKeySelector">A function specifying a sort key.</param>
+      <param name="ascending">A boolean value indicating whether sorting must be performed in the ascending order (descending, if false).</param>
+      <param name="loadSize">The size of the page.</param>
+      <typeparam name="TKey">The type of the sort key.</typeparam>
+      <returns>A <see cref="T:C1.Data.ProgressiveView`1">client view</see> that loads the same entities as the source view but does it progressively.</returns>
+    </member>
+    <member name="M:C1.Data.ClientView`1.Load">
+      <summary>
+            Loads the entities of the <see cref="T:C1.Data.ClientView`1">client view</see>.
+            </summary>
+      <remarks>
+            If the entities are already in the cache, there will be no roundtrip to the server.
+            </remarks>
+    </member>
+    <member name="M:C1.Data.ClientView`1.Refresh">
+      <summary>
+            Loads the entities of the <see cref="T:C1.Data.ClientView`1">client view</see> ignoring the client-side cache.
+            </summary>
+      <remarks>
+            Use this method to refresh data with any changes that may have occurred on the server
+            </remarks>
+    </member>
+    <member name="M:C1.Data.ClientView`1.CancelLoad">
+      <summary>
+            Cancels the current <see cref="M:C1.Data.ClientView`1.Load">loading operation</see>.
+            </summary>
+    </member>
+    <member name="P:C1.Data.ClientView`1.Scope">
+      <summary>
+            Gets the <see cref="T:C1.Data.ClientScope">client scope</see> to which this client view belongs.
+            </summary>
+    </member>
+    <member name="P:C1.Data.ClientView`1.AutoLoad">
+      <summary>
+            Gets or sets a boolean value indicating whether the <see cref="T:C1.Data.ClientView`1">client view</see> must be loaded automatically when its data is accessed.
+            </summary>
+    </member>
+    <member name="P:C1.Data.ClientView`1.IsLoading">
+      <summary>
+            Gets a value indicating whether the <see cref="T:C1.Data.ClientView`1">client view</see> is being <see cref="M:C1.Data.ClientView`1.Load">loaded</see>.
+            </summary>
+    </member>
+    <member name="P:C1.Data.ClientView`1.IsLoaded">
+      <summary>
+            Gets a value indicating whether the <see cref="T:C1.Data.ClientView`1">client view</see> is <see cref="M:C1.Data.ClientView`1.Load">loaded</see>.
+            </summary>
+    </member>
+    <member name="E:C1.Data.ClientView`1.Loaded">
+      <summary>
+            Occurs when the <see cref="T:C1.Data.ClientView`1">client view</see> has finished <see cref="M:C1.Data.ClientView`1.Load">loading</see> succesfully,
+            and also when an exception has been thrown during <see cref="M:C1.Data.ClientView`1.Load">loading</see>.
+            </summary>
+    </member>
+    <member name="T:C1.Data.ClientViewLoadedEventArgs">
+      <summary>
+            Provides data for the <see cref="E:C1.Data.ClientView`1.Loaded" /> event.
+            </summary>
+    </member>
+    <member name="M:C1.Data.ClientViewLoadedEventArgs.MarkErrorAsHandled">
+      <summary>
+            For the case where <see cref="P:C1.Data.ClientViewLoadedEventArgs.HasError" /> is true, this method marks the error as handled.
+            If this method is not called, an exception will be thrown.
+            </summary>
+    </member>
+    <member name="P:C1.Data.ClientViewLoadedEventArgs.TotalItemCount">
+      <summary>
+            Gets the total number of rows for the original query without any paging applied to it.
+            </summary>
+    </member>
+    <member name="P:C1.Data.ClientViewLoadedEventArgs.Error">
+      <summary>
+            Gets the loading error if the loading failed.
+            </summary>
+    </member>
+    <member name="P:C1.Data.ClientViewLoadedEventArgs.HasError">
+      <summary>
+            Gets a value indicating whether the loading has failed. 
+            If true, inspect the <see cref="P:C1.Data.ClientViewLoadedEventArgs.Error" /> property for details.
+            </summary>
+    </member>
+    <member name="P:C1.Data.ClientViewLoadedEventArgs.IsErrorHandled">
+      <summary>
+            Gets a value indicating whether the loading error has been marked as
+            handled by calling <see cref="M:C1.Data.ClientViewLoadedEventArgs.MarkErrorAsHandled" />.
+            </summary>
+    </member>
+    <member name="P:C1.Data.ClientViewLoadedEventArgs.Items">
+      <summary>
+            Gets all entities loaded by a <see cref="T:C1.Data.ClientView`1">client view</see>.
+            </summary>
+    </member>
+    <member name="T:C1.Data.FilteredView`1">
+      <summary>
+            Represents a <see cref="T:C1.Data.ClientView`1">client view</see> filtered by a filter key function, 
+            an <see cref="P:C1.Data.FilteredView`1.Operator">operator</see> and 
+            a <see cref="P:C1.Data.FilteredView`1.FilterKey">filter key value</see>.
+            </summary>
+      <remarks>Filtering is performed on the server.</remarks>
+      <typeparam name="T">The type of the entities in this client view.</typeparam>
+    </member>
+    <member name="F:C1.Data.FilteredView`1.Unfiltered">
+      <summary>
+            A special value indicating that filtering must not be performed.
+            To disable filtering, assign the value of this field to the <see cref="P:C1.Data.FilteredView`1.FilterKey" /> property.
+            </summary>
+    </member>
+    <member name="M:C1.Data.FilteredView`1.BindFilterKey(System.Windows.Data.Binding)">
+      <summary>
+            Binds the <see cref="P:C1.Data.FilteredView`1.FilterKey" /> property using the specified <see cref="T:System.Windows.Data.Binding" /> object.
+            </summary>
+      <param name="binding">
+            The <see cref="T:System.Windows.Data.Binding" /> object used to bind the <see cref="P:C1.Data.FilteredView`1.FilterKey" />.
+            Use null to unbind the previously bound <see cref="P:C1.Data.FilteredView`1.FilterKey" />.
+            </param>
+      <returns>The same <see cref="T:C1.Data.FilteredView`1" /> on which this method was called.</returns>
+    </member>
+    <member name="M:C1.Data.FilteredView`1.BindFilterKey(System.Object,System.String)">
+      <summary>
+            Binds the <see cref="P:C1.Data.FilteredView`1.FilterKey" /> property to a given <paramref name="path">property path</paramref>
+             on a given <paramref name="source">soure object</paramref>.
+            </summary>
+      <param name="source">The object to bind to. Cannot be null.</param>
+      <param name="path">The property path to bind to.</param>
+      <exception cref="T:System.NullReferenceException">
+        <paramref name="source" /> is null.</exception>
+      <returns>The same <see cref="T:C1.Data.FilteredView`1" /> on which this method was called.</returns>
+    </member>
+    <member name="P:C1.Data.FilteredView`1.FilterKey">
+      <summary>
+            Gets or sets a value that is used to filter items 
+            by comparing this value to the result of the filter key function applied to an item.
+            </summary>
+      <seealso cref="P:C1.Data.FilteredView`1.Operator" />
+    </member>
+    <member name="P:C1.Data.FilteredView`1.FilterKeyType">
+      <summary>
+            Gets the filter key type.
+            It is determined by the filter key function.
+            </summary>
+    </member>
+    <member name="P:C1.Data.FilteredView`1.Operator">
+      <summary>
+            Gets a <see cref="T:C1.Data.DataSource.FilterOperator" /> used to compare filter keys.
+            </summary>
+      <seealso cref="T:C1.Data.DataSource.FilterOperator" />
+    </member>
+    <member name="T:C1.Data.PagingView`1">
+      <summary>
+            Represents a paged <see cref="T:C1.Data.ClientView`1">client view</see>.
+            </summary>
+      <remarks>
+        <para>
+            Paging is performed on the server. It is controled by the <see cref="P:C1.Data.PagingView`1.PageSize" /> and 
+            <see cref="P:C1.Data.PagingView`1.PageIndex" /> properties.
+            </para>
+        <para>Sorting is required, paging entities is impossible without sort.</para>
+      </remarks>
+      <typeparam name="T">The type of the entities in the <see cref="T:C1.Data.PagingView`1">client view</see>.</typeparam>
+    </member>
+    <member name="P:C1.Data.PagingView`1.PageSize">
+      <summary>
+            Gets or sets the number of items in a page.
+            </summary>
+      <remarks>
+            To disable paging, set this property to 0.
+            </remarks>
+    </member>
+    <member name="P:C1.Data.PagingView`1.PageIndex">
+      <summary>
+            Gets or sets the index of the current page.
+            </summary>
+      <remarks>
+            Setting this property value to an invalid value is ignored.
+            A value is invalid if it is less than 0 or greater or equal to <see cref="P:C1.Data.PagingView`1.PageCount" />.
+            If there are no items in this <see cref="T:C1.Data.PagingView`1">view</see>, the only valid value for this property is 0.
+            </remarks>
+    </member>
+    <member name="P:C1.Data.PagingView`1.LoadSize">
+      <summary>
+            Gets or sets a value controling the number of entities to load in one batch.
+            </summary>
+      <remarks>
+            Entities will be loaded using the multiple of <see cref="P:C1.Data.PagingView`1.PageSize" /> nearest <see cref="P:C1.Data.PagingView`1.LoadSize" />.
+            This allows multiple pages to be loaded at once without loading partial pages.
+            </remarks>
+    </member>
+    <member name="P:C1.Data.PagingView`1.TotalItemCount">
+      <summary>
+            Gets the total number of entities in the view before paging is applied.
+            </summary>
+    </member>
+    <member name="P:C1.Data.PagingView`1.PageCount">
+      <summary>
+            Gets the number of pages in this <see cref="T:C1.Data.PagingView`1">view</see>.
+            </summary>
+      <remarks>
+            If <see cref="P:C1.Data.PagingView`1.PageSize" /> is 0, <see cref="P:C1.Data.PagingView`1.PageCount" /> is also 0.
+            </remarks>
+    </member>
+    <member name="T:C1.Data.ProgressiveView`1">
+      <summary>
+            Represents a <see cref="T:C1.Data.ClientView`1">client view</see> that loads entities sequentially (progressively) page by page.
+            The user sees the result and can interact with it before all pages are loaded.
+            </summary>
+      <remarks>Sorting is required, loading entities progressively is impossible without sort.</remarks>
+      <typeparam name="T">The type of the entities in this <see cref="T:C1.Data.ProgressiveView`1">view</see>.</typeparam>
+    </member>
+    <member name="P:C1.Data.ProgressiveView`1.LoadSize">
+      <summary>
+            Gets or sets the size of a page.
+            To disable progressive loading, set this property to 0.
+            </summary>
+    </member>
+    <member name="T:C1.Data.DataExtensions">
+      <summary>
+            Extension methods provided by Studio for Entity Framework.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataExtensions.ExecuteIn``1(System.Collections.Generic.IEnumerable{``0},C1.Data.ClientScope)">
+      <summary>
+            Executes a <paramref name="query" /> in a <paramref name="scope">client scope</paramref>, so the loaded entities are pinned to the <paramref name="scope" /> (marked as needed)
+            by calling <see cref="M:C1.Data.ClientScope.AddRef(System.Object)" /> for each of them.
+            </summary>
+      <param name="query">The query to execute inside the <see cref="T:C1.Data.ClientScope">client scope</see>.</param>
+      <param name="scope">The <see cref="T:C1.Data.ClientScope">client scope</see> to execute the query in.</param>
+      <typeparam name="T">The type of items returned by the query.</typeparam>
+      <returns>The query that will be executed inside the given <paramref name="scope" />.</returns>
+    </member>
+    <member name="T:C1.Data.DataSource.BaseControlHandler">
+      <summary>
+            A base class for control handlers that connect GUI controls of supported types to a C1DataSource so
+            that those controls can be given additional functionality such as
+            <see cref="P:C1.Data.DataSource.BaseControlHandler.AutoLookup">auto-lookup columns</see> and 
+            <see cref="P:C1.Data.DataSource.BaseControlHandler.VirtualMode">virtual mode</see>.
+            </summary>
+      <remarks>
+        <para>Use platform-specific control handlers for your controls: C1.Win.Data.ControlHandler, 
+            C1.WPF.Data.ControlHandler, and C1.Silverlight.Data.ControlHandler.</para>
+        <para>The list of supported GUI controls for each platform can be found in the reference of that platform's ControlHandler.</para>
+      </remarks>
+    </member>
+    <member name="M:C1.Data.DataSource.BaseControlHandler.Apply">
+      <summary>
+            Forces this <see cref="T:C1.Data.DataSource.BaseControlHandler">control handler</see> to apply its settings to the current control.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.BaseControlHandler.AutoLookupProperty">
+      <summary>
+            The DependencyProperty for the <see cref="P:C1.Data.DataSource.BaseControlHandler.AutoLookup" /> property.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.BaseControlHandler.VirtualModeProperty">
+      <summary>
+            The DependencyProperty for the <see cref="P:C1.Data.DataSource.BaseControlHandler.VirtualMode" /> property.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.BaseControlHandler.AutoLookup">
+      <summary>
+            Gets or sets a value indicating whether data grid columns bound to navigation (foreign key, lookup) properties 
+            must be converted to combo box columns,
+            so the user can see the right value and edit it by choosing a value from a drop-down list. The default value is False.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.BaseControlHandler.VirtualMode">
+      <summary>
+            Gets or sets a value indicating whether virtual mode specified in a <see cref="T:C1.Data.DataSource.ClientViewSource" /> is managed by this control handler.
+            </summary>
+      <remarks>
+            Setting this property to True has effect only if <see cref="P:C1.Data.DataSource.ClientViewSource.VirtualMode" /> 
+            of the associated <see cref="T:C1.Data.DataSource.ClientViewSource" /> is set to <see cref="F:C1.Data.DataSource.VirtualModeKind.Managed" />.
+            </remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.BaseControlHandler.SupportsVirtualMode">
+      <summary>
+            Gets a value indicating whether this <see cref="T:C1.Data.DataSource.BaseControlHandler">control handler</see> supports Virtual Mode.
+            </summary>
+      <seealso cref="P:C1.Data.DataSource.ClientViewSource.VirtualMode" />
+    </member>
+    <member name="T:C1.Data.SavedChangesEventArgs">
+      <summary>
+            Provides data for the C1DataSource.SavedChanges event.
+            </summary>
+    </member>
+    <member name="M:C1.Data.SavedChangesEventArgs.MarkErrorAsHandled">
+      <summary>
+            If this method is called for a failed operation (if <see cref="P:C1.Data.SavedChangesEventArgs.HasError" /> is true), it marks the error as handled.
+            Otherwise, an exception is thrown.
+            </summary>
+    </member>
+    <member name="P:C1.Data.SavedChangesEventArgs.HasError">
+      <summary>
+            Gets a value indicating whether the save operation has failed. 
+            If true, inspect the <see cref="P:C1.Data.SavedChangesEventArgs.Error" /> property for details.
+            </summary>
+    </member>
+    <member name="P:C1.Data.SavedChangesEventArgs.Error">
+      <summary>
+            Gets a value showing the error that occurred during a save operation.
+            </summary>
+    </member>
+    <member name="P:C1.Data.SavedChangesEventArgs.IsErrorHandled">
+      <summary>
+            Gets a value indicating whether the error has been marked as
+            handled by calling <see cref="M:C1.Data.SavedChangesEventArgs.MarkErrorAsHandled" />.
+            </summary>
+    </member>
+    <member name="T:C1.Data.DataSource.ClientCollectionView">
+      <summary>
+            The collection view implementation used by a <see cref="T:C1.Data.DataSource.ClientViewSource" /> and other Studio for Entity Framework data sources.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.AsLive``1">
+      <summary>
+            Converts this <see cref="T:C1.Data.DataSource.ClientCollectionView" /> to a <see cref="T:C1.LiveLinq.LiveViews.View`1">live view</see>.
+            </summary>
+      <remarks>
+        <para>This method does not change the <see cref="T:C1.Data.DataSource.ClientCollectionView" /> in any way, it just exposes its live view functionality.</para>
+        <para>This method is not supported for a <see cref="T:C1.Data.DataSource.ClientViewSource" /> in <see cref="P:C1.Data.DataSource.ClientViewSource.VirtualMode">virtual mode</see>.</para>
+      </remarks>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:C1.Data.DataSource.ClientViewSource" /> is in <see cref="P:C1.Data.DataSource.ClientViewSource.VirtualMode">virtual mode</see>.</exception>
+      <typeparam name="T">The type of the elements in this collection view.</typeparam>
+      <returns>The resulting <see cref="T:C1.LiveLinq.LiveViews.View`1">live view</see>.</returns>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.Add(System.Object)">
+      <summary>
+            Adds a new <paramref name="entity" /> to the client-side cache and to the associated context.
+            The <paramref name="entity" /> will appear in this <see cref="T:C1.Data.DataSource.ClientCollectionView">collection view</see> if it matches the underlying query.
+            </summary>
+      <param name="entity">The new entity to add.</param>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.Contains(System.Object)">
+      <summary>
+            Returns a value that indicates whether a given item belongs to this collection view.
+            </summary>
+      <returns>
+            true if the item belongs to this collection view; otherwise, false.
+            </returns>
+      <param name="item">The object to check.</param>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.MoveCurrentTo(System.Object)">
+      <summary>
+            Sets the specified item to be the <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" /> in the view.
+            </summary>
+      <returns>
+            true if the resulting <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" /> is within the view; otherwise, false.
+            </returns>
+      <param name="item">The item to set as the <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" />.</param>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.MoveCurrentToFirst">
+      <summary>
+            Sets the first item in the view as the <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" />.
+            </summary>
+      <returns>
+            true if the resulting <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" /> is an item within the view; otherwise, false.
+            </returns>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.MoveCurrentToLast">
+      <summary>
+            Sets the last item in the view as the <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" />.
+            </summary>
+      <returns>
+            true if the resulting <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" /> is an item within the view; otherwise, false.
+            </returns>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.MoveCurrentToNext">
+      <summary>
+            Sets the item after the <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" /> in the view as the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" />.
+            </summary>
+      <returns>
+            true if the resulting <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" /> is an item within the view; otherwise, false.
+            </returns>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.MoveCurrentToPosition(System.Int32)">
+      <summary>
+            Sets the item at the specified index to be the <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" /> in the view.
+            </summary>
+      <returns>
+            true if the resulting <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" /> is an item within the view; otherwise, false.
+            </returns>
+      <param name="position">The index to set the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> to.</param>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.MoveCurrentToPrevious">
+      <summary>
+            Sets the item before the <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" /> in the view as the <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" />.
+            </summary>
+      <returns>
+            true if the resulting <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" /> is an item within the view; otherwise, false.
+            </returns>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.MoveToPage(System.Int32)">
+      <summary>
+            Sets the first page as the current page.
+            </summary>
+      <param name="pageIndex">The index of the page to move to.</param>
+      <returns>True if the operation was successful; otherwise, False.</returns>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.MoveToFirstPage">
+      <summary>
+            Sets the first page as the current page.
+            </summary>
+      <returns>true if the operation was successful; otherwise, false.</returns>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.MoveToLastPage">
+      <summary>
+            Sets the last page as the current page.
+            </summary>
+      <returns>true if the operation was successful; otherwise, false.</returns>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.MoveToNextPage">
+      <summary>
+            Moves to the page after the current page.
+            </summary>
+      <returns>true if the operation was successful; otherwise, false.</returns>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.MoveToPreviousPage">
+      <summary>
+            Moves to the page before the current page.
+            </summary>
+      <returns>true if the operation was successful; otherwise, false.</returns>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.Remove(System.Object)">
+      <summary>
+            Removes the specified item from the collection.
+            </summary>
+      <param name="item">The item to remove.</param>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.RemoveAt(System.Int32)">
+      <summary>
+            Removes the item at the specified position from the collection.
+            </summary>
+      <param name="index">The position of the item to remove.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than 0 or greater than the number of items in the collection view.</exception>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientCollectionView.IndexOf(System.Object)">
+      <summary>
+            Determines the index of a specific <paramref name="item" /> in the <see cref="T:C1.Data.DataSource.ClientCollectionView" />.
+            </summary>
+      <param name="item">The item to locate in the <see cref="T:C1.Data.DataSource.ClientCollectionView" />.</param>
+      <returns>The index of the <paramref name="item" /> if found in the list; otherwise, -1.</returns>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.CollectionViewFactory">
+      <summary>
+            Gets an instance of <see cref="T:System.ComponentModel.ICollectionViewFactory" /> that can be used as a 
+            source of a <see cref="T:System.Windows.Data.CollectionViewSource" />.
+            </summary>
+      <returns>A factory that returns the same <see cref="T:C1.Data.DataSource.ClientCollectionView" /> as an <see cref="T:System.ComponentModel.ICollectionView" />.</returns>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.CanAdd">
+      <summary>
+            Gets a value indicating whether the <see cref="M:C1.Data.DataSource.ClientCollectionView.Add(System.Object)" /> method is supported.
+            </summary>
+    </member>
+    <member name="E:C1.Data.DataSource.ClientCollectionView.CurrentChanged">
+      <summary>
+            When implementing this interface, raise this event after the current item has been changed.
+            </summary>
+    </member>
+    <member name="E:C1.Data.DataSource.ClientCollectionView.CurrentChanging">
+      <summary>
+            When implementing this interface, raise this event before changing the current item. Event handler can cancel this event.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.CurrentItem">
+      <summary>
+            Gets the current item in the view.
+            </summary>
+      <returns>
+            The current item of the view or null if there is no current item.
+            </returns>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.CurrentPosition">
+      <summary>
+            Gets the ordinal position of the <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" /> within the collection view.
+            </summary>
+      <returns>
+            The ordinal position of the <see cref="P:C1.Data.DataSource.ClientCollectionView.CurrentItem" /> within the collection view.
+            </returns>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.IsEmpty">
+      <summary>
+            Returns a value that indicates whether the resulting view is empty.
+            </summary>
+      <returns>
+            true if the resulting view is empty; otherwise, false.
+            </returns>
+    </member>
+    <member name="E:C1.Data.DataSource.ClientCollectionView.PropertyChanged">
+      <summary>
+            Occurs when a property value changes.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.PageSize">
+      <summary>
+            Gets or sets the number of items to display on a page.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.PageIndex">
+      <summary>
+            Gets the zero-based index of the current page.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.TotalItemCount">
+      <summary>
+            Gets the total number of items in the view before paging is applied.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.PageCount">
+      <summary>
+            Gets the count of the pages in this view.
+            </summary>
+      <remarks>When <see cref="P:C1.Data.DataSource.ClientCollectionView.PageSize" /> is 0, the <see cref="P:C1.Data.DataSource.ClientCollectionView.PageIndex" /> will also be 0.</remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.CanChangePage">
+      <summary>
+            Gets a value that indicates whether the <see cref="P:C1.Data.DataSource.ClientCollectionView.PageIndex" /> value can change.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.IsPageChanging">
+      <summary>
+            Gets a value that indicates whether the page index is changing.
+            </summary>
+    </member>
+    <member name="E:C1.Data.DataSource.ClientCollectionView.PageChanged">
+      <summary>
+            Occurs after the <see cref="P:C1.Data.DataSource.ClientCollectionView.PageIndex" /> has changed.
+            </summary>
+    </member>
+    <member name="E:C1.Data.DataSource.ClientCollectionView.PageChanging">
+      <summary>
+            Occurs before changing the <see cref="P:C1.Data.DataSource.ClientCollectionView.PageIndex" />.
+            </summary>
+      <remarks>
+            This event allows to cancel the ongoing <see cref="P:C1.Data.DataSource.ClientCollectionView.PageIndex" /> change by setting <see cref="P:System.ComponentModel.CancelEventArgs.Cancel" /> to true.
+            </remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.CanRemove">
+      <summary>
+            Gets a value that indicates whether an item can be removed from the collection.
+            </summary>
+      <returns>
+            true if an item can be removed from the collection; otherwise, false.
+            </returns>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.ItemProperties">
+      <summary>
+            Gets a collection that contains information about the properties that are available on the items in this <see cref="T:C1.Data.DataSource.ClientCollectionView" />.
+            </summary>
+      <returns>
+            A collection that contains information about the properties that are available on the items in this <see cref="T:C1.Data.DataSource.ClientCollectionView" />.
+            </returns>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.Count">
+      <summary>
+            Gets the number of elements contained in the <see cref="T:C1.Data.DataSource.ClientCollectionView" />.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientCollectionView.Item(System.Int32)">
+      <summary>
+            Gets the element at the specified <paramref name="index" />.
+            </summary>
+      <param name="index">The zero-based index of the element to get.</param>
+      <returns>The element at the specified index.</returns>
+    </member>
+    <member name="T:C1.Data.DataSource.ClientViewSource">
+      <summary>
+            Data source object exposing data from <see cref="T:C1.Data.ClientCacheBase" /> to which GUI controls can bind.
+            Using a <see cref="T:C1.Data.DataSource.ClientViewSource" />, you can 
+            <see cref="M:C1.Data.DataSource.ClientViewSource.Load">load</see>, 
+            <see cref="P:C1.Data.DataSource.ClientViewSource.FilterDescriptors">filter</see>,
+            <see cref="P:C1.Data.DataSource.ClientViewSource.GroupDescriptors">group</see>,
+            and <see cref="P:C1.Data.DataSource.ClientViewSource.SortDescriptors">sort</see>
+            data easily.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientViewSource.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.ClientViewSource" /> class.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientViewSource.LoadRange(System.Int32,System.Int32)">
+      <summary>
+            If in <see cref="P:C1.Data.DataSource.ClientViewSource.VirtualMode">virtual mode</see>, loads a specific range of entities.
+            </summary>
+      <param name="start">The index of the first item to load.</param>
+      <param name="length">The number of entities to load.</param>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="P:C1.Data.DataSource.ClientViewSource.VirtualMode" /> is <see cref="F:C1.Data.DataSource.VirtualModeKind.None" />.</exception>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientViewSource.DeferLoad">
+      <summary>
+            Used to group changes to multiple load-affecting properties together, deferring
+            the resulting load operations so a single load operation is performed in the end, that is, when the object returned from this
+            method is disposed.
+            </summary>
+      <returns>
+            An <see cref="T:System.IDisposable" /> object that will trigger a <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> operation when disposed using the <see cref="M:System.IDisposable.Dispose" /> method.
+            </returns>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientViewSource.Load">
+      <summary>
+            Starts a load operation. Any pending load will be implicitly canceled.
+            </summary>
+      <remarks>
+            If the entities are already in the cache, there will be no roundtrip to the server.
+            </remarks>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientViewSource.Refresh">
+      <summary>
+            Starts a load operation ignoring the client-side cache. Any pending load will be implicitly canceled.
+            </summary>
+      <remarks>
+            Use this method to refresh data with any changes that may have occurred on the server
+            </remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.NameOverride">
+      <summary>
+            Gets or sets a value that overrides the value of the <see cref="P:C1.Data.DataSource.ClientViewSource.Name" /> property.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.Name">
+      <summary>
+            Gets a name of this <see cref="T:C1.Data.DataSource.ClientViewSource" /> to reference it in a C1DataSource.ViewSources collection.
+            By default it is determined by the EntitySetName (for Entity Framework) or QueryName (for RIA Services), but it can be overrided by <see cref="P:C1.Data.DataSource.ClientViewSource.NameOverride" />.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.FilterDescriptors">
+      <summary>
+            Gets the collection of <see cref="T:C1.Data.DataSource.FilterDescriptor" /> objects used when performing loads.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.FilterOperator">
+      <summary>
+            Gets or sets the logical operator used for combinining <see cref="P:C1.Data.DataSource.ClientViewSource.FilterDescriptors" /> in the filter collection.
+            The default value is <see cref="F:C1.Data.DataSource.FilterDescriptorLogicalOperator.And" />.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.SortDescriptors">
+      <summary>
+            Gets the collection of <see cref="T:C1.Data.DataSource.SortDescriptor" /> objects used to sort the data.
+            </summary>
+      <remarks>
+            In a <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> operation, the <see cref="P:C1.Data.DataSource.ClientViewSource.SortDescriptors" /> are used
+            to perform server-side sorting. 
+            The specified sorting is also applied on the client side when changes are made on the client to the loaded entities, 
+            with the <see cref="P:C1.Data.DataSource.ClientViewSource.DataView" /> reflecting the changes.
+            </remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.PageSize">
+      <summary>
+            Gets or sets the number of items displayed on each page of the <see cref="P:C1.Data.DataSource.ClientViewSource.DataView" />,
+            or the number of items to fetch in each query in <see cref="P:C1.Data.DataSource.ClientViewSource.VirtualMode">virtual mode</see>, 
+            or 0 to disable paging.
+            </summary>
+      <remarks>
+            If not in the <see cref="P:C1.Data.DataSource.ClientViewSource.VirtualMode">virtual mode</see>, 
+            a non-zero page size will cause the number of entities loaded with each
+            <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> operation to be limited, using server-side paging.
+            </remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.LoadSize">
+      <summary>
+            Gets or sets the maximum number of items to load each time a <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> is executed.
+            When equal to 0, all requested entities will be loaded.
+            The default is 0.
+            </summary>
+      <remarks>
+        <para>When <see cref="P:C1.Data.DataSource.ClientViewSource.PageSize" /> and <see cref="P:C1.Data.DataSource.ClientViewSource.LoadSize" /> are both non-zero, 
+            entities will be loaded using the multiple of <see cref="P:C1.Data.DataSource.ClientViewSource.PageSize" /> nearest <see cref="P:C1.Data.DataSource.ClientViewSource.LoadSize" />. 
+            This allows multiple pages to be loaded at once without loading partial pages.</para>
+        <para>This property is ignored when the <see cref="T:C1.Data.DataSource.ClientViewSource" /> is in <see cref="P:C1.Data.DataSource.ClientViewSource.VirtualMode">virtual mode</see>.</para>
+      </remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.GroupDescriptors">
+      <summary>
+            Gets the collection of <see cref="T:C1.Data.DataSource.GroupDescriptor" /> objects used to organize the loaded entities into groups.
+            </summary>
+      <remarks>
+        <para>Grouping only works in WPF and Silverlight. It is ignored in WinForms because WinForms data binding does not support grouping.</para>
+        <para>When a <see cref="T:C1.Data.DataSource.GroupDescriptor" /> is applied, the data will inherently be sorted by the grouped property.
+            To force a grouped property to be sorted in <see cref="T:System.ComponentModel.ListSortDirection">descending</see> order, add a
+            <see cref="T:C1.Data.DataSource.SortDescriptor" /> to the <see cref="P:C1.Data.DataSource.ClientViewSource.SortDescriptors" /> collection for that property using the
+            <see cref="T:System.ComponentModel.ListSortDirection">Descending</see> direction.</para>
+      </remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.Include">
+      <summary>
+            Gets or sets a comma-separated list of property paths that specify related objects 
+            to include during the <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> operation.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.VirtualMode">
+      <summary>
+            Gets or sets a value indicating whether the <see cref="T:C1.Data.DataSource.ClientViewSource" /> is in virtual mode.
+            Virtual mode is an innovative technology allowing to bind GUI controls directly to very large 
+            data sets without delays and performance degradation and without inconvenience of paging.
+            By default, virtual mode is disabled (the default value is <see cref="F:C1.Data.DataSource.VirtualModeKind.None" />).
+            </summary>
+      <remarks>
+        <para>
+          <see cref="T:C1.Data.DataSource.ClientViewSource" /> in virtual mode intelligently and transparently both for the end user and for the developer
+            loads only the entities that need to be displayed on the screen.
+            </para>
+        <para>
+            To enable virtual mode, set this property to <see cref="F:C1.Data.DataSource.VirtualModeKind.Managed" /> if you have a control handler 
+            with <see cref="P:C1.Data.DataSource.BaseControlHandler.VirtualMode" /> set to True;
+            otherwise, set it to <see cref="F:C1.Data.DataSource.VirtualModeKind.Unmanaged" />.
+            </para>
+      </remarks>
+      <seealso cref="T:C1.Data.DataSource.VirtualModeKind" />
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.CacheTimeout">
+      <summary>
+            Gets or sets the period of time entities loaded in virtual mode are kept in the cache without checking whether they are needed or not.
+            If an entity was neither used nor considered needed for a period of time longer than <see cref="P:C1.Data.DataSource.ClientViewSource.CacheTimeout" />, 
+            <see cref="T:C1.Data.DataSource.ClientViewSource" /> may evict it from the cache.
+            </summary>
+      <remarks>This property is not used if <see cref="P:C1.Data.DataSource.ClientViewSource.VirtualMode" /> is <see cref="F:C1.Data.DataSource.VirtualModeKind.None" />.</remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.BaseView">
+      <summary>
+            Gets or sets an instance of <see cref="T:C1.Data.ClientView`1" /> that the <see cref="T:C1.Data.DataSource.ClientViewSource" /> uses as the base for composing queries.
+            </summary>
+      <remarks>
+            The <see cref="T:C1.Data.DataSource.ClientViewSource" /> applies filtering, sorting, grouping, and paging to its BaseView.
+            </remarks>
+      <exception cref="T:System.ArgumentException">The value is not null and not an instance of <see cref="T:C1.Data.ClientView`1" />.</exception>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.DataView">
+      <summary>
+            Gets the current view of entities resulting from the last load operation.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.AutoLoad">
+      <summary>
+            Gets or sets a value indicating whether <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> is automatically invoked on startup and when
+            a change occurs that impacts the query composed by the <see cref="T:C1.Data.DataSource.ClientViewSource" />.
+            The default is True.
+            </summary>
+      <remarks>
+            When <see cref="P:C1.Data.DataSource.ClientViewSource.AutoLoad" /> is True, any property change affecting the load
+            query will automatically invoke a <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> after the specified
+            <see cref="P:C1.Data.DataSource.ClientViewSource.LoadDelay" />. 
+            Examples of properties that impact the query are
+            <see cref="P:C1.Data.DataSource.ClientViewSource.PageSize" /> and <see cref="P:C1.Data.DataSource.ClientViewSource.FilterOperator" />. Also, changes to dependency
+            object collections like <see cref="P:C1.Data.DataSource.ClientViewSource.FilterDescriptors" /> and changes to the dependency
+            properties on elements contained in those collections will affect the query and prompt
+            an automatic <see cref="M:C1.Data.DataSource.ClientViewSource.Load" />.
+            </remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.LoadDelay">
+      <summary>
+            Gets or sets the delay before an automatic data loading operation is started. 
+            It is the delay from the time a change prompting automatic load occurs until
+            the time the resulting <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> is started.
+            The default delay is 25 milliseconds.
+            </summary>
+      <remarks>
+            Multiple changes that occur within the specified time span are aggregated into a single
+            <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> operation. For every change that occurs, the delay timer is reset.
+            This allows many changes to be combined into a single call as long as each change occurs
+            within the specified delay from the last. Once the delay timer is allowed to elapse
+            without a change occurring, <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> will be invoked.
+            </remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.CurrentClientView">
+      <summary>
+            Gets the current <see cref="T:C1.Data.ClientView`1">client view</see> used to load entities,
+            or null in <see cref="P:C1.Data.DataSource.ClientViewSource.VirtualMode">virtual mode</see>.
+            </summary>
+      <remarks>
+        <para>Using <see cref="P:C1.Data.DataSource.ClientViewSource.CurrentClientView" />, you can build client views on top of the <see cref="T:C1.Data.DataSource.ClientViewSource" />
+            by applying live view operators to the <see cref="P:C1.Data.DataSource.ClientViewSource.CurrentClientView" />.</para>
+        <para>The value of this property changes and the <see cref="E:C1.Data.DataSource.ClientViewSource.PropertyChanged" /> event is raised 
+            whenever the query used to load entities changes.</para>
+      </remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.MoveToFirstOnLoad">
+      <summary>
+            Gets or sets a value indicating that the first item must be made current after <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> operation is completed
+            if current item was not set by other means.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.IsLoadingData">
+      <summary>
+            Gets a value indicating whether the <see cref="T:C1.Data.DataSource.ClientViewSource" /> is currently loading data.
+            </summary>
+    </member>
+    <member name="E:C1.Data.DataSource.ClientViewSource.LoadedData">
+      <summary>
+            Occurs when a load operation is completed, or when an exception was thrown during the load operation.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.ClientViewSource.LoadCommand">
+      <summary>
+            Gets an <see cref="T:System.Windows.Input.ICommand" /> that invokes <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> on this <see cref="T:C1.Data.DataSource.ClientViewSource" />.
+            </summary>
+    </member>
+    <member name="E:C1.Data.DataSource.ClientViewSource.PropertyChanged">
+      <summary>
+            Occurs when a property value changes.
+            </summary>
+    </member>
+    <member name="T:C1.Data.DataSource.VirtualModeKind">
+      <summary>
+            Enumeration of possible virtual modes a <see cref="T:C1.Data.DataSource.ClientViewSource" /> can be in. Used in the <see cref="P:C1.Data.DataSource.ClientViewSource.VirtualMode" /> property.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.VirtualModeKind.None">
+      <summary>
+            Virtual mode is disabled.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.VirtualModeKind.Managed">
+      <summary>
+            Virtual mode is managed by a GUI control bound to the <see cref="T:C1.Data.DataSource.ClientViewSource" />. That GUI control must have a
+            <see cref="T:C1.Data.DataSource.BaseControlHandler">control handler</see> 
+            with the <see cref="P:C1.Data.DataSource.BaseControlHandler.VirtualMode" /> property set to True.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.VirtualModeKind.Unmanaged">
+      <summary>
+            Virtual mode is not managed by a <see cref="T:C1.Data.DataSource.BaseControlHandler">control handler</see>, it is managed by the <see cref="T:C1.Data.DataSource.ClientViewSource" /> itself
+            that is unaware of what controls are bound to it.
+            This option should be used only if you don't have a GUI control that supports virtual mode through a control handler.
+            Although it allows to use virtual mode with any GUI bound control (with or without a control handler), it should be used with caution,
+            only if you can't use the <see cref="F:C1.Data.DataSource.VirtualModeKind.Managed" /> option. 
+            See the "Programming Guide" in the Studio for Entity Framework documentation for more details.
+            </summary>
+    </member>
+    <member name="T:C1.Data.DataSource.ClientViewSourceException">
+      <summary>
+            This exception indicates that a <see cref="T:C1.Data.DataSource.ClientViewSource" /> is miconfigured 
+            or an error has occurred during the <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> operation.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientViewSourceException.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.ClientViewSourceException" /> class.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientViewSourceException.#ctor(System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.ClientViewSourceException" /> class with a specified error message.
+            </summary>
+      <param name="message">The error message that explains the reason for the exception.</param>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientViewSourceException.#ctor(System.String,System.Exception)">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.ClientViewSourceException" /> class with a specified error message,
+            and a reference to the inner exception that is the cause of this exception.
+            </summary>
+      <param name="message">The error message that explains the reason for the exception.</param>
+      <param name="inner">The exception that is the cause of the current exception.</param>
+    </member>
+    <member name="M:C1.Data.DataSource.ClientViewSourceException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.ClientViewSourceException" /> class 
+            with serialized data.
+            </summary>
+      <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object that holds the serialized object data.</param>
+      <param name="context">The contextual information about the source or destination.</param>
+    </member>
+    <member name="T:C1.Data.DataSource.DependencyObjectCollection`1">
+      <summary>
+            An observable collection of <see cref="T:System.Windows.DependencyObject">dependency objects</see>.
+            </summary>
+      <typeparam name="T">The type of objects in the collection. Must be derived from <see cref="T:System.Windows.DependencyObject" />.</typeparam>
+    </member>
+    <member name="M:C1.Data.DataSource.DependencyObjectCollection`1.InsertItem(System.Int32,`0)">
+      <summary>
+            Inserts an item into the collection at the specified index.
+            </summary>
+      <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
+      <param name="item">The object to insert.</param>
+    </member>
+    <member name="M:C1.Data.DataSource.DependencyObjectCollection`1.SetItem(System.Int32,`0)">
+      <summary>
+            Replaces the element at the specified index.
+            </summary>
+      <param name="index">The zero-based index of the element to replace.</param>
+      <param name="item">The new value for the element at the specified index.</param>
+    </member>
+    <member name="T:C1.Data.DataSource.FilterDescriptor">
+      <summary>
+            Descriptor used by the <see cref="T:C1.Data.DataSource.ClientViewSource" /> to filter data in queries.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterDescriptor.PropertyPathProperty">
+      <summary>
+            The DependencyProperty for the <see cref="P:C1.Data.DataSource.FilterDescriptor.PropertyPath" /> property.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterDescriptor.OperatorProperty">
+      <summary>
+            The DependencyProperty for the <see cref="P:C1.Data.DataSource.FilterDescriptor.Operator" /> property.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterDescriptor.IsCaseSensitiveProperty">
+      <summary>
+            The DependencyProperty for the <see cref="P:C1.Data.DataSource.FilterDescriptor.IsCaseSensitive" /> property.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterDescriptor.ValueProperty">
+      <summary>
+            The DependencyProperty for the <see cref="P:C1.Data.DataSource.FilterDescriptor.Value" /> property.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterDescriptor.DefaultIgnoredValue">
+      <summary>
+            The default value of the <see cref="P:C1.Data.DataSource.FilterDescriptor.IgnoredValue" /> property.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterDescriptor.IgnoredValueProperty">
+      <summary>
+            The <see cref="T:System.Windows.DependencyProperty" /> for the <see cref="P:C1.Data.DataSource.FilterDescriptor.IgnoredValue" /> property.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.FilterDescriptor.#ctor(System.String,C1.Data.DataSource.FilterOperator,System.Object)">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.FilterDescriptor" /> class with the specified property to use for filtering,
+            the operator to use when evaluating the filtering check, and the filter value. 
+            </summary>
+      <param name="propertyPath">The property path to use for filtering.</param>
+      <param name="filterOperator">The kind of comparison to use.</param>
+      <param name="filterValue">The value to use when filtering.</param>
+    </member>
+    <member name="M:C1.Data.DataSource.FilterDescriptor.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.FilterDescriptor" /> class with default values.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.FilterDescriptor.PropertyPath">
+      <summary>
+            Gets or sets the name of the property path used as the left operand.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.FilterDescriptor.Operator">
+      <summary>
+            Gets or sets the filter operator.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.FilterDescriptor.IsCaseSensitive">
+      <summary>
+            Gets or sets a value indicating whether the <see cref="T:C1.Data.DataSource.FilterDescriptor" /> is case sensitive for string values.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.FilterDescriptor.Value">
+      <summary>
+            Gets or sets the value of the right operand.
+            </summary>
+      <remarks>
+            This will be used by the <see cref="T:C1.Data.DataSource.ClientViewSource" /> to compose a filter for the load
+            query. It will be applied following the pattern
+            <c>[Entity].[PropertyPath] [Operator] [Value]</c>. For example, a query might look like
+            <c>Customer.Name == "CurrentCustomerName"</c>.
+            </remarks>
+    </member>
+    <member name="P:C1.Data.DataSource.FilterDescriptor.IgnoredValue">
+      <summary>
+            Gets or sets the value for the right operand for which this filter should be ignored.
+            </summary>
+      <remarks>
+            If <see cref="P:C1.Data.DataSource.FilterDescriptor.Value" /> matches <see cref="P:C1.Data.DataSource.FilterDescriptor.IgnoredValue" />, this filter will not be applied
+            to the load query by the <see cref="T:C1.Data.DataSource.ClientViewSource" />. The <see cref="P:C1.Data.DataSource.FilterDescriptor.IgnoredValue" /> is
+            compared to <see cref="P:C1.Data.DataSource.FilterDescriptor.Value" /> twice in the <see cref="T:C1.Data.DataSource.ClientViewSource" />. First, it is
+            strictly compared using an <see cref="M:System.Object.Equals(System.Object,System.Object)" /> comparison. Second,
+            both values are converted to type of the property specified by the <see cref="P:C1.Data.DataSource.FilterDescriptor.PropertyPath" />
+            and compared again. If either conversion matches, this filter is ignored.
+            <para>
+            For example, the following Value/IgnoredValue pairs will all match for an integer property
+            and result in the filter being ignored: 0/0, 0/"0", "0"/"0", and "0"/0.
+            </para><para>
+            This property is set to <see cref="F:C1.Data.DataSource.FilterDescriptor.DefaultIgnoredValue" /> by default. The default value
+            will only match if <see cref="P:C1.Data.DataSource.FilterDescriptor.Value" /> is also set to <see cref="F:C1.Data.DataSource.FilterDescriptor.DefaultIgnoredValue" />.
+            </para></remarks>
+    </member>
+    <member name="T:C1.Data.DataSource.FilterDescriptorCollection">
+      <summary>
+            Collection of <see cref="T:C1.Data.DataSource.FilterDescriptor" /> dependency objects.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.FilterDescriptorCollection.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.FilterDescriptorCollection" /> class.
+            </summary>
+    </member>
+    <member name="T:C1.Data.DataSource.FilterDescriptorLogicalOperator">
+      <summary>
+            Enumeration of logical operators for filter collections.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterDescriptorLogicalOperator.And">
+      <summary>
+            Filters are AND'ed.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterDescriptorLogicalOperator.Or">
+      <summary>
+            Filters are OR'ed.
+            </summary>
+    </member>
+    <member name="T:C1.Data.DataSource.FilterOperator">
+      <summary>
+            Operator used in FilterDescriptor class.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterOperator.IsLessThan">
+      <summary>
+            Left operand must be smaller than the right one.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterOperator.IsLessThanOrEqualTo">
+      <summary>
+            Left operand must be smaller than or equal to the right one.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterOperator.IsEqualTo">
+      <summary>
+            Left operand must be equal to the right one.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterOperator.IsNotEqualTo">
+      <summary>
+            Left operand must be different from the right one.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterOperator.IsGreaterThanOrEqualTo">
+      <summary>
+            Left operand must be larger than the right one.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterOperator.IsGreaterThan">
+      <summary>
+            Left operand must be larger than or equal to the right one.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterOperator.StartsWith">
+      <summary>//
+            Left operand must start with the right one.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterOperator.EndsWith">
+      <summary>
+            Left operand must end with the right one.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterOperator.Contains">
+      <summary>
+            Left operand must contain the right one.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.FilterOperator.IsContainedIn">
+      <summary>
+            Left operand must be contained in the right one.
+            </summary>
+    </member>
+    <member name="T:C1.Data.DataSource.GroupDescriptor">
+      <summary>
+            Descriptor used by the <see cref="T:C1.Data.DataSource.ClientViewSource" /> to group data
+            returned from server-side queries.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.GroupDescriptor.PropertyPathProperty">
+      <summary>
+            The DependencyProperty for the <see cref="P:C1.Data.DataSource.GroupDescriptor.PropertyPath" /> property.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.GroupDescriptor.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.GroupDescriptor" /> class.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.GroupDescriptor.#ctor(System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.GroupDescriptor" /> class.
+            </summary>
+      <param name="propertyPath">The group property path</param>
+    </member>
+    <member name="P:C1.Data.DataSource.GroupDescriptor.PropertyPath">
+      <summary>
+            Gets or sets the name of the property path used to group data.
+            </summary>
+    </member>
+    <member name="T:C1.Data.DataSource.GroupDescriptorCollection">
+      <summary>
+            Collection of <see cref="T:C1.Data.DataSource.GroupDescriptor" /> dependency objects.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.GroupDescriptorCollection.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.GroupDescriptorCollection" /> class.
+            </summary>
+    </member>
+    <member name="T:C1.Data.DataSource.SortDescriptor">
+      <summary>
+            Descriptor used by the <see cref="T:C1.Data.DataSource.ClientViewSource" /> to sort data returned from queries.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.SortDescriptor.DirectionProperty">
+      <summary>
+            The DependencyProperty for the <see cref="P:C1.Data.DataSource.SortDescriptor.Direction" /> property.
+            </summary>
+    </member>
+    <member name="F:C1.Data.DataSource.SortDescriptor.PropertyPathProperty">
+      <summary>
+            The DependencyProperty for the <see cref="P:C1.Data.DataSource.SortDescriptor.PropertyPath" /> property.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.SortDescriptor.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.SortDescriptor" /> class.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.SortDescriptor.#ctor(System.String,System.ComponentModel.ListSortDirection)">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.SortDescriptor" /> class.
+            </summary>
+      <param name="propertyPath">The sort property path</param>
+      <param name="direction">The sort direction</param>
+    </member>
+    <member name="P:C1.Data.DataSource.SortDescriptor.Direction">
+      <summary>
+            Gets or sets the sort direction: Ascending or Descending.
+            </summary>
+    </member>
+    <member name="P:C1.Data.DataSource.SortDescriptor.PropertyPath">
+      <summary>
+            Gets or sets the name of the property path used to sort data.
+            </summary>
+    </member>
+    <member name="T:C1.Data.DataSource.SortDescriptorCollection">
+      <summary>
+            Collection of <see cref="T:C1.Data.DataSource.SortDescriptor" /> dependency objects.
+            </summary>
+    </member>
+    <member name="M:C1.Data.DataSource.SortDescriptorCollection.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.DataSource.SortDescriptorCollection" /> class.
+            </summary>
+    </member>
+    <member name="T:C1.Data.Entities.EntityViewSource">
+      <summary>
+            An Entity Framework-specific version of the <see cref="T:C1.Data.DataSource.ClientViewSource" /> class. 
+            </summary>
+      <remarks>
+            To load data, specify the <see cref="P:C1.Data.Entities.EntityViewSource.EntitySetName">name</see> 
+            of an <see cref="!:System.Data.Metadata.Edm.EntitySet">entity set</see> to load the data from.
+            </remarks>
+    </member>
+    <member name="P:C1.Data.Entities.EntityViewSource.EntitySetName">
+      <summary>
+            Gets or sets the name of the <see cref="!:System.Data.Metadata.Edm.EntitySet">entity set</see> to load entities from.
+            </summary>
+      <remarks>
+            Changing the value of this property causes the <see cref="T:C1.Data.Entities.EntityViewSource" /> to reload data
+            if <see cref="P:C1.Data.DataSource.ClientViewSource.AutoLoad" /> is set to true.
+            </remarks>
+    </member>
+    <member name="P:C1.Data.Entities.EntityViewSource.Name">
+      <summary>
+            Gets a name of this <see cref="T:C1.Data.Entities.EntityViewSource" /> to reference it in a C1DataSource.ViewSources collection.
+            It is determined by the <see cref="P:C1.Data.Entities.EntityViewSource.EntitySetName" /> but can be overrided by the <see cref="P:C1.Data.DataSource.ClientViewSource.NameOverride" />.
+            </summary>
+    </member>
+    <member name="T:C1.Data.Entities.EntityClientCache">
+      <summary>
+            Represents a client-side cache specific to Entity Framework.
+            </summary>
+      <remarks>
+            Usually, a single instance of this class is created on application startup 
+            and exists during the entire application lifetime,
+            while each form, window, or user control works with data using a <see cref="T:C1.Data.Entities.EntityClientScope" /> created by calling the <see cref="M:C1.Data.Entities.EntityClientCache.CreateScope" /> method.
+            </remarks>
+    </member>
+    <member name="M:C1.Data.Entities.EntityClientCache.#ctor(System.Data.Entity.DbContext)">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.Entities.EntityClientCache" /> class.
+            </summary>
+      <param name="baseContext">The <see cref="P:C1.Data.Entities.EntityClientCache.DbContext">object context</see> that is used to access the data.</param>
+    </member>
+    <member name="M:C1.Data.Entities.EntityClientCache.#ctor(System.Data.Entity.Core.Objects.ObjectContext)">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.Entities.EntityClientCache" /> class.
+            </summary>
+      <param name="baseContext">The <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext">object context</see> that is used to access the data.</param>
+    </member>
+    <member name="M:C1.Data.Entities.EntityClientCache.CreateScope">
+      <summary>
+            Creates an <see cref="T:C1.Data.Entities.EntityClientScope">Entity Framework-specific client scope</see>.
+            </summary>
+      <remarks>
+            Usually, each window, form, or user control creates a <see cref="T:C1.Data.ClientScope" /> and uses it 
+            to access entities.
+            </remarks>
+      <see cref="M:C1.Data.ClientCacheBase.CreateScope" />
+      <returns>A new <see cref="T:C1.Data.Entities.EntityClientScope">client scope</see>.</returns>
+    </member>
+    <member name="M:C1.Data.Entities.EntityClientCache.GetDefault(System.Type)">
+      <summary>
+            Returns the default <see cref="T:C1.Data.Entities.EntityClientCache" /> for a given <paramref name="contextType">context type</paramref>.
+            </summary>
+      <remarks>
+        <para>Creates an <see cref="T:C1.Data.Entities.EntityClientCache" /> for the specified <paramref name="contextType">context type</paramref> if it does not already exist;
+            otherwise, returns an existing instance.</para>
+        <para>It is the same default client cache as used by C1DataSource with specified C1DataSource.ObjectContextType.</para>
+      </remarks>
+      <param name="contextType">
+            A subclass of <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext" /> to get the default <see cref="T:C1.Data.Entities.EntityClientCache" /> for.
+            </param>
+      <returns>The default <see cref="T:C1.Data.Entities.EntityClientCache" /> for the given <paramref name="contextType">context type</paramref>.</returns>
+    </member>
+    <member name="M:C1.Data.Entities.EntityClientCache.RegisterContext(System.Data.Entity.Core.Objects.ObjectContext,System.Type)">
+      <summary>
+            Registers an <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext" /> as a default for C1DataSource controls for a given <paramref name="contextType">context type</paramref>.
+            </summary>
+      <param name="context">An <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext" /> to set as default.</param>
+      <param name="contextType">The type (derived from <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext" />) to register the <paramref name="context" /> for.</param>
+      <returns>An <see cref="T:System.IDisposable" /> to unregister the <paramref name="context" />.</returns>
+      <remarks>
+            Use this method when you need to customize the default <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext" /> used in C1DataSource controls. 
+            Register a custom <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext" /> on startup before any C1DataSource instances are created.
+            </remarks>
+      <seealso cref="M:C1.Data.Entities.EntityClientCache.GetDefault(System.Type)" />
+      <exception cref="T:System.InvalidOperationException">Another context is already registered for the given <paramref name="contextType" />.</exception>
+    </member>
+    <member name="M:C1.Data.Entities.EntityClientCache.RegisterContext(System.Data.Entity.Core.Objects.ObjectContext)">
+      <summary>
+            Registers an <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext" /> as a default for C1DataSource controls.
+            </summary>
+      <param name="context">An <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext" /> to set as default.</param>
+      <returns>An <see cref="T:System.IDisposable" /> to unregister the <paramref name="context" />.</returns>
+      <remarks>
+            Use this method when you need to customize the default <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext" /> used in C1DataSource controls. 
+            Register a custom <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext" /> on startup before any C1DataSource instances are created.
+            </remarks>
+      <seealso cref="M:C1.Data.Entities.EntityClientCache.GetDefault(System.Type)" />
+      <exception cref="T:System.InvalidOperationException">Another context is already registered.</exception>
+    </member>
+    <member name="M:C1.Data.Entities.EntityClientCache.RegisterContext(System.Data.Entity.DbContext,System.Type)">
+      <summary>
+            Registers an <see cref="P:C1.Data.Entities.EntityClientCache.DbContext" /> as a default for C1DataSource controls for a given <paramref name="contextType">context type</paramref>.
+            </summary>
+      <param name="context">An <see cref="P:C1.Data.Entities.EntityClientCache.DbContext" /> to set as default.</param>
+      <param name="contextType">The type (derived from <see cref="P:C1.Data.Entities.EntityClientCache.DbContext" />) to register the <paramref name="context" /> for.</param>
+      <returns>An <see cref="T:System.IDisposable" /> to unregister the <paramref name="context" />.</returns>
+      <remarks>
+            Use this method when you need to customize the default <see cref="P:C1.Data.Entities.EntityClientCache.DbContext" /> used in C1DataSource controls. 
+            Register a custom <see cref="P:C1.Data.Entities.EntityClientCache.DbContext" /> on startup before any C1DataSource instances are created.
+            </remarks>
+      <seealso cref="M:C1.Data.Entities.EntityClientCache.GetDefault(System.Type)" />
+      <exception cref="T:System.InvalidOperationException">Another context is already registered for the given <paramref name="contextType" />.</exception>
+    </member>
+    <member name="M:C1.Data.Entities.EntityClientCache.RegisterContext(System.Data.Entity.DbContext)">
+      <summary>
+            Registers an <see cref="P:C1.Data.Entities.EntityClientCache.DbContext" /> as a default for C1DataSource controls.
+            </summary>
+      <param name="context">An <see cref="P:C1.Data.Entities.EntityClientCache.DbContext" /> to set as default.</param>
+      <returns>An <see cref="T:System.IDisposable" /> to unregister the <paramref name="context" />.</returns>
+      <remarks>
+            Use this method when you need to customize the default <see cref="P:C1.Data.Entities.EntityClientCache.DbContext" /> used in C1DataSource controls. 
+            Register a custom <see cref="P:C1.Data.Entities.EntityClientCache.DbContext" /> on startup before any C1DataSource instances are created.
+            </remarks>
+      <seealso cref="M:C1.Data.Entities.EntityClientCache.GetDefault(System.Type)" />
+      <exception cref="T:System.InvalidOperationException">Another context is already registered.</exception>
+    </member>
+    <member name="M:C1.Data.Entities.EntityClientCache.AcceptChanges">
+      <summary>
+            Accepts all changes made to entities in the <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext" />.
+            </summary>
+    </member>
+    <member name="P:C1.Data.Entities.EntityClientCache.ObjectContext">
+      <summary>
+            The <see cref="P:C1.Data.Entities.EntityClientCache.ObjectContext" /> through which <see cref="T:C1.Data.Entities.EntityClientCache" /> accesses the data.
+            </summary>
+    </member>
+    <member name="T:C1.Data.Entities.EntityClientScope">
+      <summary>
+            Defines a scope of data access. Provides facilities to create <see cref="T:C1.Data.ClientView`1">client views</see>.
+            </summary>
+      <remarks>
+            Usually, one scope is created for each window/user control, and disposed at the end of its lifetime.
+            Entities <see cref="M:C1.Data.ClientScope.AddRef(System.Object)">pinned to the scope (marked as needed)</see> are not evicted from the cache 
+            until the scope is <see cref="M:C1.Data.ClientScope.Dispose">disposed</see> or collected by the GC.
+            </remarks>
+    </member>
+    <member name="M:C1.Data.Entities.EntityClientScope.#ctor(C1.Data.Entities.EntityClientCache)">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.Data.Entities.EntityClientScope" /> class with the specified <see cref="T:C1.Data.Entities.EntityClientCache" />.
+            </summary>
+      <param name="clientCache">An instance of the <see cref="T:C1.Data.Entities.EntityClientCache" /> class to which the new <see cref="T:C1.Data.Entities.EntityClientScope">client scope</see> is connected.</param>
+    </member>
+    <member name="M:C1.Data.Entities.EntityClientScope.GetItems``1">
+      <summary>
+            Gets a <see cref="T:C1.Data.ClientView`1">client view</see> of entities of a given type.
+            </summary>
+      <remarks>
+            Entities are loaded using the <see cref="!:System.Data.Metadata.Edm.EntitySet">entity set</see> of the matching entity type
+            from the <see cref="!:System.Data.Objects.ObjectContext.DefaultContainerName">default entity container.</see></remarks>
+      <typeparam name="T">The type of entities to load.</typeparam>
+      <returns>A <see cref="T:C1.Data.ClientView`1">client view</see> of entities of the specified type.</returns>
+    </member>
+    <member name="M:C1.Data.Entities.EntityClientScope.GetItems``1(System.String)">
+      <summary>
+            Gets a <see cref="T:C1.Data.ClientView`1">client view</see> of entities from the specified <paramref name="entitySetName">entity set</paramref>.
+            </summary>
+      <param name="entitySetName">The name of the entity set to load entities from.</param>
+      <typeparam name="T">The type of entities in the <paramref name="entitySetName">entity set</paramref>.</typeparam>
+      <returns>A <see cref="T:C1.Data.ClientView`1">client view</see> of entities from the specified <paramref name="entitySetName">entity set</paramref>.</returns>
+    </member>
+    <member name="P:C1.Data.Entities.EntityClientScope.ClientCache">
+      <summary>
+            Gets the <see cref="T:C1.Data.Entities.EntityClientCache" /> to which this <see cref="T:C1.Data.Entities.EntityClientScope">client scope</see> is connected.
+            </summary>
+    </member>
+    <member name="T:C1.Data.Entities.EntityFrameworkExtensions">
+      <summary>
+            Provides a set of extensions methods for Entity Framework.
+            </summary>
+    </member>
+    <member name="M:C1.Data.Entities.EntityFrameworkExtensions.AsLive``1(System.Data.Entity.Core.Objects.DataClasses.EntityCollection{``0})">
+      <summary>
+            Converts an <see cref="T:System.Data.Entity.Core.Objects.DataClasses.EntityCollection`1" /> to an editable <see cref="T:C1.LiveLinq.LiveViews.View`1">live view</see>.
+            </summary>
+      <typeparam name="T">The type of the entities in the <paramref name="entities">entity collection</paramref>.</typeparam>
+      <param name="entities">The entity collection to convert.</param>
+      <returns>The resulting <see cref="T:C1.LiveLinq.LiveViews.View`1">live view</see>.</returns>
+    </member>
+    <member name="M:C1.Data.Entities.EntityFrameworkExtensions.AsCollectionView``1(System.Data.Entity.Core.Objects.DataClasses.EntityCollection{``0})">
+      <summary>
+            Converts an <see cref="T:System.Data.Entity.Core.Objects.DataClasses.EntityCollection`1" /> to an editable <see cref="T:System.ComponentModel.ICollectionView" />.
+            </summary>
+      <typeparam name="T">The type of the entities in the <paramref name="entities">entity collection</paramref>.</typeparam>
+      <param name="entities">The <see cref="T:System.Data.Entity.Core.Objects.DataClasses.EntityCollection`1" /> to convert.</param>
+      <returns>The resulting <see cref="T:System.ComponentModel.ICollectionView" />.</returns>
+    </member>
+    <member name="M:C1.Data.Entities.EntityFrameworkExtensions.AsLive``1(System.Collections.Generic.ICollection{``0},C1.Data.Entities.EntityClientScope)">
+      <summary>
+            Converts a POCO <see cref="T:System.Data.Entity.Core.Objects.DataClasses.EntityCollection`1" /> to an editable <see cref="T:C1.LiveLinq.LiveViews.View`1">live view</see>.
+            </summary>
+      <typeparam name="T">The type of the entities in the <paramref name="pocoCollection">collection</paramref>.</typeparam>
+      <param name="pocoCollection">The entity collection to convert. It must be of type <see cref="T:System.Data.Entity.Core.Objects.DataClasses.EntityCollection`1" />.</param>
+      <param name="scope">The <see cref="T:C1.Data.Entities.EntityClientScope" /> to which the entity owning this collection belongs (in which it was
+            fetched by a query or created).</param>
+      <returns>The resulting <see cref="T:C1.LiveLinq.LiveViews.View`1">live view</see>.</returns>
+      <exception cref="T:System.ArgumentException">The <paramref name="pocoCollection">collection</paramref> is not of type <see cref="T:System.Data.Entity.Core.Objects.DataClasses.EntityCollection`1" />.</exception>
+      <remarks>When POCO objects are used (with proxies), navigation collection properties are typed
+            as <see cref="T:System.Collections.Generic.ICollection`1" />, not <see cref="T:System.Data.Entity.Core.Objects.DataClasses.EntityCollection`1" /> (although they are <see cref="T:System.Data.Entity.Core.Objects.DataClasses.EntityCollection`1" /> at run time).
+            That is why a special AsLive extension method must be used. 
+            </remarks>
+    </member>
+    <member name="T:C1.Data.PageChangingEventArgs">
+      <summary>Provides data for the <see cref="E:C1.Data.DataSource.ClientCollectionView.PageChanging" /> event.</summary>
+    </member>
+    <member name="M:C1.Data.PageChangingEventArgs.#ctor(System.Int32)">
+      <summary>Initializes a new instance of the <see cref="T:C1.Data.PageChangingEventArgs" /> class.</summary>
+      <param name="newPageIndex">The index of the requested page.</param>
+    </member>
+    <member name="P:C1.Data.PageChangingEventArgs.NewPageIndex">
+      <summary>Gets the index of the requested page.</summary>
+      <returns>The index of the requested page.</returns>
+    </member>
+    <member name="T:C1.Data.Transactions.ClientTransaction">
+      <summary>
+            Represents a transaction that tracks client-side changes and can roll them back.
+            </summary>
+      <remarks>
+            To create a new independent transaction, use the <see cref="M:C1.Data.ClientCacheBase.CreateTransaction" /> method.
+            To create a child transaction, use the <see cref="M:C1.Data.Transactions.ClientTransaction.#ctor(C1.Data.Transactions.ClientTransaction)">constructor</see>.
+            </remarks>
+    </member>
+    <member name="M:C1.Data.Transactions.ClientTransaction.#ctor(C1.Data.Transactions.ClientTransaction)">
+      <summary>
+            Initializes a child (nested) transaction, a new instance of the <see cref="T:C1.Data.Transactions.ClientTransaction" /> class
+            with a specified parent transaction.
+            </summary>
+      <remarks>
+        <para>A child transaction is automatically committed/rolled back if its parent transaction is committed/rolled back.</para>
+            Create a child transaction in cases where you need to open a new window for editing a 
+            portion of data that is being editing in an already open transaction.
+            </remarks>
+      <param name="parent">The parent transaction. Cannot be null.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="parent" /> is null.</exception>
+    </member>
+    <member name="M:C1.Data.Transactions.ClientTransaction.Dispose">
+      <summary>
+            Disposes of the <see cref="T:C1.Data.Transactions.ClientTransaction" />.
+            </summary>
+      <remarks>
+            If the <see cref="P:C1.Data.Transactions.ClientTransaction.State" /> is <see cref="F:C1.LiveLinq.TransactionState.Open" />, 
+            the <see cref="T:C1.Data.Transactions.ClientTransaction" /> is automatically <see cref="M:C1.Data.Transactions.ClientTransaction.Rollback">rolled back</see>.
+            </remarks>
+    </member>
+    <member name="M:C1.Data.Transactions.ClientTransaction.Scope">
+      <summary>
+            Opens the transaction scope.
+            </summary>
+      <remarks>
+        <para>The transaction tracks changes only when they are made inside an open scope.</para>
+        <para>Calling <see cref="M:System.IDisposable.Dispose" /> on the return value closes the scope.</para>
+      </remarks>
+      <returns>
+            An instance of an <see cref="T:System.IDisposable" /> that will close the scope when its <see cref="M:System.IDisposable.Dispose" /> method is called.
+            </returns>
+      <exception cref="T:System.InvalidOperationException">
+            The <see cref="P:ClientTransaction.State" /> is not <see cref="F:C1.LiveLinq.TransactionState.Open" />.
+            </exception>
+    </member>
+    <member name="M:C1.Data.Transactions.ClientTransaction.Commit">
+      <summary>
+            Commits the transaction if it was not committed before. Commits changes that were made while this transaction's scope was open.
+            </summary>
+      <exception cref="T:System.InvalidOperationException">
+            The <see cref="P:C1.Data.Transactions.ClientTransaction.State" /> is not <see cref="F:C1.LiveLinq.TransactionState.Open" />.
+            </exception>
+    </member>
+    <member name="M:C1.Data.Transactions.ClientTransaction.Rollback">
+      <summary>
+            Rolls back the transaction.
+            </summary>
+      <remarks>
+            Calling this method cancels the changes that were made in the <see cref="M:C1.Data.Transactions.ClientTransaction.Scope">scope</see> of 
+            this <see cref="T:C1.Data.Transactions.ClientTransaction">transaction</see>.
+            </remarks>
+      <exception cref="T:System.InvalidOperationException">
+            The <see cref="P:C1.Data.Transactions.ClientTransaction.State" /> is <see cref="F:C1.LiveLinq.TransactionState.Committed" /> or <see cref="F:C1.LiveLinq.TransactionState.Committing" />.
+            </exception>
+    </member>
+    <member name="M:C1.Data.Transactions.ClientTransaction.ScopeDataContext(System.Object)">
+      <summary>
+            Wraps an object so the transaction <see cref="M:C1.Data.Transactions.ClientTransaction.Scope">scope</see> is automatically opened 
+            when a value is being assigned to a property of the wrapped object.
+            </summary>
+      <param name="entity">The object to wrap.</param>
+      <returns>The wrapped object.</returns>
+    </member>
+    <member name="P:C1.Data.Transactions.ClientTransaction.State">
+      <summary>
+            Gets the <see cref="T:C1.LiveLinq.TransactionState">state</see> the <see cref="T:C1.Data.Transactions.ClientTransaction">transaction</see> is in.
+            </summary>
+      <seealso cref="T:C1.LiveLinq.TransactionState" />
+    </member>
+    <member name="P:C1.Data.Transactions.ClientTransaction.HasChanges">
+      <summary>
+            Gets a value indicating whether any changes were made in the <see cref="M:C1.Data.Transactions.ClientTransaction.Scope">scope</see> of 
+            this <see cref="T:C1.Data.Transactions.ClientTransaction">transaction</see>.
+            </summary>
+    </member>
+    <member name="E:C1.Data.Transactions.ClientTransaction.PropertyChanged">
+      <summary>
+            Occurs when a property value changes, after it has been changed.
+            </summary>
+    </member>
+  </members>
+</doc>

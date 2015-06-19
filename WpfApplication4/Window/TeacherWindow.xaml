@@ -1,92 +1,442 @@
-﻿<Window x:Class="EvalonClient.TeacherWindow"  
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
-        Title="教师管理会话窗口" Height="700" Width="1000" Background="#FF0C7272" Visibility="Visible" Loaded="TeacherWindow_OnLoaded">
+﻿<Window x:Class="EvalonClient.TeacherWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
+        Title="教师管理会话窗口"
+        Width="1000"
+        Height="700"
+        Background="#FF0C7272"
+        Loaded="TeacherWindow_OnLoaded"
+        Visibility="Visible">
     <Grid>
-        <Grid  Margin="0,0,0,538">
-            <Calendar HorizontalAlignment="Left" Margin="-18,-3,0,0" VerticalAlignment="Top" Height="138" Width="208"/>
-            <Label Content="教务管理系统 " HorizontalAlignment="Left" Margin="201,41,0,0" VerticalAlignment="Top" FontSize="36" FontFamily="Bell MT" />
-            <TextBlock x:Name="TSN" Text="欢迎您," HorizontalAlignment="Left" Margin="751,22,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="16" />
+        <Grid Margin="0,0,0,538">
+            <Calendar Width="208"
+                      Height="138"
+                      Margin="-18,-3,0,0"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top" />
+            <Label Margin="201,41,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="教务管理系统 "
+                   FontFamily="Bell MT"
+                   FontSize="36" />
+            <TextBlock x:Name="TSN"
+                       Margin="751,22,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="16"
+                       Text="欢迎您,"
+                       TextWrapping="Wrap" />
 
-            <Button x:Name="TretuanHomepage" Click="TretuanHomepage_Click" Content="返回主页" HorizontalAlignment="Left" Margin="533,103,0,0" VerticalAlignment="Top" Width="115"  Height="32"/>
-            <Button x:Name="TchangePassword" Click="TchangePassword_Click" Content="修改密码" HorizontalAlignment="Left" Margin="648,103,0,0" VerticalAlignment="Top" Width="115" Height="32"/>
-            <Button x:Name="TrefleshPage" Click="TrefleshPage_Click" Content="刷新" HorizontalAlignment="Left" Margin="763,103,0,0" VerticalAlignment="Top" Width="115" Height="32"/>
-            <Button x:Name="TquitPage" Click="TquitPage_Click" Content="退出" HorizontalAlignment="Left" Margin="878,103,0,0" VerticalAlignment="Top" Width="114" Height="32"/>
+            <Button x:Name="TretuanHomepage"
+                    Width="115"
+                    Height="32"
+                    Margin="533,103,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="TretuanHomepage_Click"
+                    Content="返回主页" />
+            <Button x:Name="TchangePassword"
+                    Width="115"
+                    Height="32"
+                    Margin="648,103,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="TchangePassword_Click"
+                    Content="修改密码" />
+            <Button x:Name="TrefleshPage"
+                    Width="115"
+                    Height="32"
+                    Margin="763,103,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="TrefleshPage_Click"
+                    Content="刷新" />
+            <Button x:Name="TquitPage"
+                    Width="114"
+                    Height="32"
+                    Margin="878,103,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="TquitPage_Click"
+                    Content="退出" />
         </Grid>
         <Grid Margin="0,135,0,476" RenderTransformOrigin="0.5,0.5">
             <Grid.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black" Offset="0"/>
-                    <GradientStop Color="#FF276E89" Offset="1"/>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Offset="0" Color="Black" />
+                    <GradientStop Offset="1" Color="#FF276E89" />
                 </LinearGradientBrush>
             </Grid.Background>
             <Grid.RenderTransform>
                 <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="-0.122"/>
-                    <TranslateTransform/>
+                    <ScaleTransform />
+                    <SkewTransform />
+                    <RotateTransform Angle="-0.122" />
+                    <TranslateTransform />
                 </TransformGroup>
             </Grid.RenderTransform>
-            <Button x:Name="TPersonalInfo" Click="TPersonInfo_click" Content="个人信息" HorizontalAlignment="Left" VerticalAlignment="Top" Width="195" Height="52" RenderTransformOrigin="0.414,0.563"  FontSize="26.667" FontFamily="Tw Cen MT Condensed Extra Bold"/>
-            <Button x:Name="TCourseReview" Click="TCourseReview_click" Content="授课查看" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="195" Height="52" RenderTransformOrigin="0.414,0.563" Margin="195,0,0,10"  FontSize="26.667" FontFamily="Tw Cen MT Condensed Extra Bold" />
-            <Button x:Name="TChooseReview" Content="选课查询" HorizontalAlignment="Left" VerticalAlignment="Top" Width="195" Height="52" RenderTransformOrigin="0.414,0.563" Margin="390,0,0,0" FontSize="26.667" FontFamily="Tw Cen MT Condensed Extra Bold"  />
-            <Button x:Name="TTestManage" Content="考试安排" HorizontalAlignment="Left" VerticalAlignment="Top" Width="195" Height="52" RenderTransformOrigin="0.414,0.563" Margin="585,0,0,0" FontSize="26.667" FontFamily="Tw Cen MT Condensed Extra Bold" />
-            <Button x:Name="TReviewCount" Content="查询统计" HorizontalAlignment="Left" VerticalAlignment="Top" Width="215" Height="52" RenderTransformOrigin="0.414,0.563" Margin="780,0,0,0" FontSize="26.667" FontFamily="Tw Cen MT Condensed Extra Bold"  />
+            <Button x:Name="TPersonalInfo"
+                    Width="195"
+                    Height="52"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="TPersonInfo_click"
+                    Content="个人信息"
+                    FontFamily="Tw Cen MT Condensed Extra Bold"
+                    FontSize="26.667"
+                    RenderTransformOrigin="0.414,0.563" />
+            <Button x:Name="TCourseReview"
+                    Width="195"
+                    Height="52"
+                    Margin="195,0,0,10"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Click="TCourseReview_click"
+                    Content="授课查看"
+                    FontFamily="Tw Cen MT Condensed Extra Bold"
+                    FontSize="26.667"
+                    RenderTransformOrigin="0.414,0.563" />
+            <Button x:Name="TChooseReviewBtn"
+                    Width="195"
+                    Height="52"
+                    Margin="390,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="TChooseReviewBtnClick"
+                    Content="选课查询"
+                    FontFamily="Tw Cen MT Condensed Extra Bold"
+                    FontSize="26.667"
+                    RenderTransformOrigin="0.414,0.563" />
+            <Button x:Name="TTestManage"
+                    Width="195"
+                    Height="52"
+                    Margin="585,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="TTestManageBtnClick"
+                    Content="考试安排"
+                    FontFamily="Tw Cen MT Condensed Extra Bold"
+                    FontSize="26.667"
+                    RenderTransformOrigin="0.414,0.563" />
+            <Button x:Name="TReviewCount"
+                    Width="215"
+                    Height="52"
+                    Margin="780,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="TReviewCountBtnClick"
+                    Content="查询统计"
+                    FontFamily="Tw Cen MT Condensed Extra Bold"
+                    FontSize="26.667"
+                    RenderTransformOrigin="0.414,0.563" />
         </Grid>
 
-        <Grid x:Name="THomePage" Margin="0,180,0,0" Visibility="Visible">
-            <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="180" Margin="273,167,0,0" TextWrapping="Wrap" Text="欢迎来到上海交大教务管理系统，您当前的身份为上海交通大学在职教师，您将有一下几个部分的权限来对您的教学事务和个人事务进行管理                                                                  1.个人信息管理,在当前的子功能下，您将能查看自己在上海交通大学注册的个人信息,请仔细核对，如果有不符，请及时联系上海交通大学进行更改，确保无误;&#xD;&#xA;2.授课查看管理，在当前的子功能下,您将能查看到您在上海交通大学的所教授课程的情况,并可以查询到所教授课程的具体的时间和地点,请仔细核对确保无误&#xD;&#xA;" VerticalAlignment="Top" Width="471"/>
+        <Grid x:Name="THomePage"
+              Margin="0,180,0,0"
+              Visibility="Visible">
+            <TextBox x:Name="textBox"
+                     Width="471"
+                     Height="180"
+                     Margin="273,167,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Text="欢迎来到上海交大教务管理系统，您当前的身份为上海交通大学在职教师，您将有一下几个部分的权限来对您的教学事务和个人事务进行管理                                                                  1.个人信息管理,在当前的子功能下，您将能查看自己在上海交通大学注册的个人信息,请仔细核对，如果有不符，请及时联系上海交通大学进行更改，确保无误; &#10;2.授课查看管理，在当前的子功能下,您将能查看到您在上海交通大学的所教授课程的情况,并可以查询到所教授课程的具体的时间和地点,请仔细核对确保无误 &#10;"
+                     TextWrapping="Wrap" />
         </Grid>
 
-        <Grid x:Name="TChangePwd" Background="AliceBlue" Margin="0,187,0,0"  Visibility="Hidden">
+        <Grid x:Name="TChangePwd"
+              Margin="0,187,0,0"
+              Background="AliceBlue"
+              Visibility="Hidden">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="450*"/>
-                <ColumnDefinition Width="21*"/>
-                <ColumnDefinition Width="26*"/>
-                <ColumnDefinition Width="495*"/>
+                <ColumnDefinition Width="450*" />
+                <ColumnDefinition Width="21*" />
+                <ColumnDefinition Width="26*" />
+                <ColumnDefinition Width="495*" />
             </Grid.ColumnDefinitions>
-            <Label Content="原密码" HorizontalAlignment="Left" Margin="377,122,0,0" VerticalAlignment="Top"/>
-            <PasswordBox x:Name="TOldPwd" HorizontalAlignment="Left" Margin="2,126,0,0" VerticalAlignment="Top" Width="138" Grid.ColumnSpan="3" Grid.Column="1"/>
-            <Label Content="新密码" HorizontalAlignment="Left" Margin="377,171,0,0" VerticalAlignment="Top"/>
-            <PasswordBox x:Name="TNewPwd" HorizontalAlignment="Left" Margin="2,175,0,0" VerticalAlignment="Top" Width="138" Grid.ColumnSpan="3" Grid.Column="1"/>
-            <Label Content="确认密码" HorizontalAlignment="Left" Margin="377,216,0,0" VerticalAlignment="Top"/>
-            <PasswordBox x:Name="TConPwd" HorizontalAlignment="Left" Margin="2,220,0,0" VerticalAlignment="Top" Width="138" Grid.ColumnSpan="3" Grid.Column="1"/>
-            <Button Click="TConfirmChange_Click" Content="确认修改" HorizontalAlignment="Left" Margin="10.373,276,0,0" VerticalAlignment="Top" Width="75" Grid.ColumnSpan="2" Grid.Column="2"/>
+            <Label Margin="377,122,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="原密码" />
+            <Label Margin="377,171,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="新密码" />
+            <Label Margin="377,216,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="确认密码" />
+            <PasswordBox x:Name="TOldPwd"
+                         Grid.Column="1"
+                         Grid.ColumnSpan="3"
+                         Width="138"
+                         Margin="2,126,0,0"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Top" />
+            <PasswordBox x:Name="TNewPwd"
+                         Grid.Column="1"
+                         Grid.ColumnSpan="3"
+                         Width="138"
+                         Margin="2,175,0,0"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Top" />
+            <PasswordBox x:Name="TConPwd"
+                         Grid.Column="1"
+                         Grid.ColumnSpan="3"
+                         Width="138"
+                         Margin="2,220,0,0"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Top" />
+            <Button Grid.Column="2"
+                    Grid.ColumnSpan="2"
+                    Width="75"
+                    Margin="10.373,276,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="TConfirmChange_Click"
+                    Content="确认修改" />
         </Grid>
 
-        <Grid x:Name="TPersonInfo" Background="AliceBlue" Margin="0,177,0,0" Visibility="Hidden">
-            <TextBlock x:Name="TName"  HorizontalAlignment="Left" Margin="403,50,0,0" TextWrapping="Wrap" Text="姓名:"  VerticalAlignment="Top" Height="28" Width="178" FontSize="21.333"/>
-            <TextBlock x:Name="TTID"  HorizontalAlignment="Left" Margin="403,100,0,0" TextWrapping="Wrap" Text="工号:"  VerticalAlignment="Top" Height="28" Width="178" FontSize="21.333"/>
-            <TextBlock x:Name="TSex"  HorizontalAlignment="Left" Margin="403,150,0,0" TextWrapping="Wrap" Text="性别:"  VerticalAlignment="Top" Height="28" Width="178" FontSize="21.333"/>
-            <TextBlock x:Name="TTitle"   HorizontalAlignment="Left" Margin="403,200,0,0" TextWrapping="Wrap" Text="职称:"  VerticalAlignment="Top" Height="28" Width="178" FontSize="21.333"/>
-            <Label  Content="以上个人信息教师不可更改，如有错误，请联系教务处相关负责部门进行更改，确保个人信息无误" HorizontalAlignment="Left" Margin="240,347,0,0" VerticalAlignment="Top" Background="Red"/>
+        <Grid x:Name="TPersonInfo"
+              Margin="0,177,0,0"
+              Background="AliceBlue"
+              Visibility="Hidden">
+            <TextBlock x:Name="TName"
+                       Width="178"
+                       Height="28"
+                       Margin="403,50,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="21.333"
+                       Text="姓名:"
+                       TextWrapping="Wrap" />
+            <TextBlock x:Name="TTID"
+                       Width="178"
+                       Height="28"
+                       Margin="403,100,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="21.333"
+                       Text="工号:"
+                       TextWrapping="Wrap" />
+            <TextBlock x:Name="TSex"
+                       Width="178"
+                       Height="28"
+                       Margin="403,150,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="21.333"
+                       Text="性别:"
+                       TextWrapping="Wrap" />
+            <TextBlock x:Name="TTitle"
+                       Width="178"
+                       Height="28"
+                       Margin="403,200,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="21.333"
+                       Text="职称:"
+                       TextWrapping="Wrap" />
+            <Label Margin="240,347,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Background="Red"
+                   Content="以上个人信息教师不可更改，如有错误，请联系教务处相关负责部门进行更改，确保个人信息无误" />
 
         </Grid>
 
-        <Grid x:Name="TTeachCourseView" Background="AliceBlue" Margin="0,180,0,0" Visibility="Hidden">
+        <Grid x:Name="TTeachCourseView"
+              Margin="0,180,0,0"
+              Background="AliceBlue"
+              Visibility="Hidden">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Label Content="查看授课详细信息" HorizontalAlignment="Left" Margin="350,40,0,0" VerticalAlignment="Top" FontSize="32" FontFamily="Tempus Sans ITC" FontWeight="Bold"/>
-            <DataGrid x:Name="teachCourseData" CanUserAddRows="False"  HorizontalAlignment="Left" Margin="220,116,0,0" VerticalAlignment="Top" Height="295" Width="548"/>
-            <Button x:Name="TCourseViewBtn"   Content="查看我的授课课程表"  Click="TCourseViewBtn_click" HorizontalAlignment="Left" Margin="812,299,0,0" VerticalAlignment="Top" Width="144" Height="40"/>
+            <Label Margin="350,40,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="查看授课详细信息"
+                   FontFamily="Tempus Sans ITC"
+                   FontSize="32"
+                   FontWeight="Bold" />
+            <c1:C1DataGrid x:Name="teachCourseData"
+                           Width="548"
+                           Height="297"
+                           Margin="220,116,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top" />
 
         </Grid>
 
-        <Grid x:Name="TTestView" Background="AliceBlue" Margin="0,180,0,7" Visibility="Hidden">
-            <Label Content="查看所教课程的考试安排" HorizontalAlignment="Left" Margin="334,31,0,0" VerticalAlignment="Top" FontSize="26.667" FontFamily="STXingkai"/>
-            <RichTextBox HorizontalAlignment="Left" Height="51" Margin="295,86,0,0" VerticalAlignment="Top" Width="404" FontFamily="STHupo">
+        <Grid x:Name="TTestView"
+              Margin="0,180,0,7"
+              Background="AliceBlue"
+              Visibility="Hidden">
+            <Label Margin="334,31,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="查看所教课程的考试安排"
+                   FontFamily="STXingkai"
+                   FontSize="26.667" />
+            <RichTextBox Width="404"
+                         Height="51"
+                         Margin="295,86,0,0"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Top"
+                         FontFamily="STHupo">
                 <FlowDocument>
                     <Paragraph>
-                        <Run Text="本页面显示的考试安排为教师所教授的课程的考试安排，并非是显示教师个人的监考考试安排，具体的监考安排有教务处确定"/>
+                        <Run Text="本页面显示的考试安排为教师所教授的课程的考试安排，并非是显示教师个人的监考考试安排，具体的监考安排有教务处确定" />
                     </Paragraph>
                 </FlowDocument>
             </RichTextBox>
+        </Grid>
 
+        <Grid x:Name="TChooseCourseInfoView"
+              Margin="0,177,0,0"
+              Background="AliceBlue"
+              Visibility="Hidden">
+
+
+            <c1:C1Tile Width="304"
+                       Height="49"
+                       Margin="343,25,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="查看所选课程的学生"
+                       FontFamily="SketchFlow Print"
+                       FontSize="26.667"
+                       FontWeight="Bold"
+                       c1:C1TileService.PointerDownAnimation="True" />
+            <c1:C1TileListBox Margin="490,56,0,0"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top" />
+            <TextBox x:Name="TSearchChooseCourseStudentByCourseIdTextBox"
+                     Width="139"
+                     Height="23"
+                     Margin="389,92,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Text=""
+                     TextWrapping="Wrap" />
+            <Button x:Name="TSearchChooseCourseStudentByCourseIdBtn"
+                    Width="75"
+                    Margin="533,92,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="TSearchChooseCourseStudentByCourseIdBtnClick"
+                    Content="确认搜索" />
+            <c1:C1DataGrid x:Name="TChooseCourseStduentGrid"
+                           Width="423"
+                           Height="342"
+                           Margin="293,144,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top" />
+        </Grid>
+
+        <Grid x:Name="TTestInfoView"
+              Margin="0,187,0,0"
+              Background="AliceBlue"
+              Visibility="Hidden">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="701*" />
+                <ColumnDefinition Width="291*" />
+            </Grid.ColumnDefinitions>
+            <c1:C1Tile Width="312"
+                       Height="44"
+                       Margin="327,24,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="查看所授课程的考试安排"
+                       FontSize="25"
+                       FontWeight="Bold"
+                       c1:C1TileService.PointerDownAnimation="True" />
+            <c1:C1DataGrid x:Name="TTestGrid"
+                           Grid.ColumnSpan="2"
+                           Width="558"
+                           Height="268"
+                           Margin="205,87,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top" />
+        </Grid>
+
+        <Grid x:Name="TSearchAndCountInfoView"
+              Margin="0,180,0,0"
+              Background="AliceBlue"
+              Visibility="Hidden">
+            <TextBox x:Name="TSearchInfoByCourseIdTextBox"
+                     Width="120"
+                     Height="23"
+                     Margin="83,103,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Text=""
+                     TextWrapping="Wrap" />
+            <Label Margin="38,102,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="课程号" />
+
+            <c1:C1Tile Height="30"
+                       Margin="53,10,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="查询项目"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       c1:C1TileService.PointerDownAnimation="True" />
+            <Label Margin="38,179,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="工号" />
+            <Label Margin="38,259,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="学号" />
+            <TextBox x:Name="TSearchInfoByTeacherIdTextBox"
+                     Width="120"
+                     Height="23"
+                     Margin="83,180,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Text=""
+                     TextWrapping="Wrap" />
+            <TextBox x:Name="TSearchInfoByStudentIdTextBox"
+                     Width="120"
+                     Height="23"
+                     Margin="83,260,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Text=""
+                     TextWrapping="Wrap" />
+            <Button x:Name="TConfirmSearchInfoBtn"
+                    Width="75"
+                    Margin="83,400,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="TConfirmSearchInfoBtnClick"
+                    Content="确认搜索" />
+            <c1:C1DataGrid x:Name="TSearchViewGrid"
+                           Width="396"
+                           Height="133"
+                           Margin="393,163,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top" />
+            <c1:C1Tile Height="30"
+                       Margin="509,102,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Content="显示栏"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       c1:C1TileService.PointerDownAnimation="True" />
 
 
         </Grid>
+
+
 
 
 

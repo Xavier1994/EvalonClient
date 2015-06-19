@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>C1.WPF.Data.Entity.4</name>
+  </assembly>
+  <members>
+    <member name="T:C1.WPF.Data.Entities.C1DataSource">
+      <summary>
+            A data source control that simplifies data binding of GUI controls
+            to data in a <see cref="T:C1.Data.Entities.EntityClientCache" />. Can be used to bind multiple controls to different queries.
+            </summary>
+      <remarks>
+            To bind a control to data in a <see cref="T:C1.Data.Entities.EntityClientCache" />, 
+            add a <see cref="T:C1.WPF.Data.Entities.C1DataSource" /> to a XAML file, 
+            specify the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ContextType">context type</see>,
+            populate the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ViewSources" /> collection with <see cref="T:C1.Data.Entities.EntityViewSource" /> objects to define views (based on queries),
+            and bind GUI controls like this:
+            <code lang="XAML">
+            &lt;DataGrid ItemsSource="{Binding Customers, ElementName=c1DataSource}"/&gt;
+            </code>
+            where Customers is the name of an <see cref="T:C1.Data.Entities.EntityViewSource" /> in the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ViewSources" /> collection
+            and c1DataSource is the name of the <see cref="T:C1.WPF.Data.Entities.C1DataSource" />.
+            </remarks>
+    </member>
+    <member name="M:C1.WPF.Data.Entities.C1DataSource.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:C1.WPF.Data.Entities.C1DataSource" /> class.
+            </summary>
+    </member>
+    <member name="M:C1.WPF.Data.Entities.C1DataSource.SaveChanges">
+      <summary>
+            Persists all changes to the server.
+            </summary>
+      <remarks>
+            Changes will be saved for all entities in the context, including
+            those that were not loaded through this <see cref="T:C1.WPF.Data.Entities.C1DataSource" />.
+            This will also commit a pending Add or Edit in the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ViewSources">collection views</see>.
+            </remarks>
+    </member>
+    <member name="M:C1.WPF.Data.Entities.C1DataSource.RejectChanges">
+      <summary>
+            Rejects the changes for every entity in the context.
+            </summary>
+      <remarks>
+            Changes will be rejected for all entities in the context, including
+            those that were not loaded through this <see cref="T:C1.WPF.Data.Entities.C1DataSource" />.
+            This will also cancel a pending Add or Edit in the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ViewSources">collection views</see>.
+            </remarks>
+    </member>
+    <member name="M:C1.WPF.Data.Entities.C1DataSource.Load">
+      <summary>
+            Loads all <see cref="T:C1.Data.Entities.EntityViewSource" /> objects in the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ViewSources" /> collection.
+            </summary>
+      <remarks>
+            This method calls <see cref="M:C1.Data.DataSource.ClientViewSource.Load" /> for all elements of the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ViewSources" /> collection.
+            </remarks>
+    </member>
+    <member name="M:C1.WPF.Data.Entities.C1DataSource.Refresh">
+      <summary>
+            Refreshes all <see cref="T:C1.Data.Entities.EntityViewSource" /> objects in the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ViewSources" /> collection.
+            </summary>
+      <remarks>
+            This method calls <see cref="M:C1.Data.DataSource.ClientViewSource.Refresh" /> for all elements of the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ViewSources" /> collection.
+            </remarks>
+    </member>
+    <member name="F:C1.WPF.Data.Entities.C1DataSource.ControlHandlerProperty">
+      <summary>
+            Identifies the C1.WPF.Data.Entities.C1DataSource.ControlHandler attached property.
+            </summary>
+      <remarks>Use this attached property to connect a <see cref="T:C1.WPF.Data.ControlHandler">control handler</see> to a control.</remarks>
+    </member>
+    <member name="M:C1.WPF.Data.Entities.C1DataSource.SetControlHandler(System.Windows.DependencyObject,C1.Data.DataSource.BaseControlHandler)">
+      <summary>
+            Sets the value of the C1.WPF.Data.Entities.C1DataSource.ControlHandler attached property to a given 
+            <paramref name="control" />.
+            </summary>
+      <param name="control">The object on which to set the C1.WPF.Data.Entities.C1DataSource.ControlHandler attached property.</param>
+      <param name="handler">The property value to set.</param>
+      <seealso cref="F:C1.WPF.Data.Entities.C1DataSource.ControlHandlerProperty" />
+    </member>
+    <member name="M:C1.WPF.Data.Entities.C1DataSource.GetControlHandler(System.Windows.DependencyObject)">
+      <summary>
+            Gets the value of the C1.WPF.Data.Entities.C1DataSource.ControlHandler attached property from a given 
+            <paramref name="control" />.
+            </summary>
+      <param name="control">The control from which to read the property value.</param>
+      <returns>The value of the C1.WPF.Data.Entities.C1DataSource.ControlHandler attached property.</returns>
+      <seealso cref="F:C1.WPF.Data.Entities.C1DataSource.ControlHandlerProperty" />
+    </member>
+    <member name="P:C1.WPF.Data.Entities.C1DataSource.ViewSources">
+      <summary>
+            Gets a collection of <see cref="T:C1.Data.Entities.EntityViewSource" /> objects that define views (based on queries) in this <see cref="T:C1.WPF.Data.Entities.C1DataSource" />.
+            </summary>
+    </member>
+    <member name="P:C1.WPF.Data.Entities.C1DataSource.Item(System.String)">
+      <summary>
+            Gets the <see cref="T:C1.Data.DataSource.ClientCollectionView" /> of the <see cref="T:C1.Data.Entities.EntityViewSource" /> with the specified <paramref name="name" />
+            in the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ViewSources" /> collection.
+            </summary>
+      <param name="name">The name of the <see cref="T:C1.Data.Entities.EntityViewSource" /> to take the <see cref="T:C1.Data.DataSource.ClientCollectionView" /> from.</param>
+      <returns>The <see cref="T:C1.Data.DataSource.ClientCollectionView" /> of the <see cref="T:C1.Data.Entities.EntityViewSource" />.</returns>
+    </member>
+    <member name="P:C1.WPF.Data.Entities.C1DataSource.Item(System.Int32)">
+      <summary>
+            Gets the <see cref="T:C1.Data.DataSource.ClientCollectionView" /> of the <see cref="T:C1.Data.Entities.EntityViewSource" />
+            at the specified <paramref name="index" /> in the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ViewSources" /> collection.
+            </summary>
+      <param name="index">The index of the <see cref="T:C1.Data.Entities.EntityViewSource" /> to take the <see cref="T:C1.Data.DataSource.ClientCollectionView" /> from.</param>
+      <returns>The <see cref="T:C1.Data.DataSource.ClientCollectionView" /> of the <see cref="T:C1.Data.Entities.EntityViewSource" />.</returns>
+    </member>
+    <member name="P:C1.WPF.Data.Entities.C1DataSource.ClientScope">
+      <summary>
+            Gets the <see cref="T:C1.Data.Entities.EntityClientScope">client scope</see> to which this <see cref="T:C1.WPF.Data.Entities.C1DataSource" /> belongs.
+            </summary>
+    </member>
+    <member name="P:C1.WPF.Data.Entities.C1DataSource.ClientCache">
+      <summary>
+            Gets or sets the <see cref="T:C1.Data.Entities.EntityClientCache" /> used by this <see cref="T:C1.WPF.Data.Entities.C1DataSource" /> to access the data.
+            </summary>
+    </member>
+    <member name="P:C1.WPF.Data.Entities.C1DataSource.ContextType">
+      <summary>
+            Gets or sets the type of a <see cref="T:System.Data.Entity.DbContext" /> or an <see cref="T:System.Data.Objects.ObjectContext" />
+            used to obtain the <see cref="M:C1.Data.Entities.EntityClientCache.GetDefault(System.Type)">default client cache</see>.
+            </summary>
+    </member>
+    <member name="P:C1.WPF.Data.Entities.C1DataSource.ObjectContext">
+      <summary>
+            Gets the <see cref="T:System.Data.Objects.ObjectContext" /> the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ClientCache" /> is connected to.
+            </summary>
+    </member>
+    <member name="P:C1.WPF.Data.Entities.C1DataSource.DbContext">
+      <summary>
+            Gets the <see cref="T:System.Data.Entity.DbContext" /> the <see cref="P:C1.WPF.Data.Entities.C1DataSource.ClientCache" /> is connected to.
+            </summary>
+    </member>
+    <member name="E:C1.WPF.Data.Entities.C1DataSource.SavingChanges">
+      <summary>
+            Occurs before changes are saved.
+            </summary>
+      <remarks>
+            This event is raised from the <see cref="M:C1.WPF.Data.Entities.C1DataSource.SaveChanges" /> method and allows a handler to cancel the operation
+            before it begins. When a handler sets <see cref="P:System.ComponentModel.CancelEventArgs.Cancel" /> to
+            True, the operation will be aborted and a subsequent SavedChanges event
+            will not be raised.
+            </remarks>
+      <seealso cref="M:C1.WPF.Data.Entities.C1DataSource.SaveChanges" />
+    </member>
+    <member name="E:C1.WPF.Data.Entities.C1DataSource.SavedChanges">
+      <summary>
+            Occurs after a save operation is completed.
+            </summary>
+      <seealso cref="M:C1.WPF.Data.Entities.C1DataSource.SaveChanges" />
+    </member>
+    <member name="P:C1.WPF.Data.Entities.C1DataSource.RefreshInterval">
+      <summary>
+            Gets or sets the interval between automatic <see cref="M:C1.WPF.Data.Entities.C1DataSource.Refresh" /> operations
+            to refresh the data with any changes that may have occurred on the server.
+            </summary>
+    </member>
+    <member name="T:C1.WPF.Data.Entities.EntityViewSourceCollection">
+      <summary>
+            An observable collection of <see cref="T:C1.Data.Entities.EntityViewSource" /> objects.
+            </summary>
+    </member>
+    <member name="P:C1.WPF.Data.Entities.EntityViewSourceCollection.Item(System.String)">
+      <summary>
+            Gets the <see cref="T:C1.Data.Entities.EntityViewSource" /> with the specified <paramref name="name" />.
+            </summary>
+      <param name="name">!The name of the <see cref="T:C1.Data.Entities.EntityViewSource" /> to get from the collection.</param>
+      <returns>The <see cref="T:C1.Data.Entities.EntityViewSource" /> with the specified <paramref name="name" />, or null if it does not exist.</returns>
+    </member>
+    <member name="T:C1.WPF.Data.ControlHandler">
+      <summary>
+            Represents a control handler that connect GUI controls of supported types to a C1DataSource so
+            that those controls can be given additional functionality such as
+            <see cref="P:C1.Data.DataSource.BaseControlHandler.AutoLookup">lookup columns</see> and <see cref="P:C1.Data.DataSource.BaseControlHandler.VirtualMode">virtual mode</see>.
+            </summary>
+      <remarks>
+        <para>To connect a <see cref="T:C1.WPF.Data.ControlHandler">control handler</see> to a GUI control, 
+            assign an instance of this class to the <see cref="F:C1.WPF.Data.Entities.C1DataSource.ControlHandlerProperty" /> attached property of the GUI control.</para>
+        <para>The supported GUI controls are: <see cref="T:System.Windows.Controls.DataGrid" />, C1.WPF.FlexGrid.C1FlexGrid, C1.WPF.DataGrid.C1DataGrid.</para>
+      </remarks>
+    </member>
+    <member name="F:C1.WPF.Data.ControlHandler.DataSourceProperty">
+      <summary>The DependencyProperty for the <see cref="P:C1.WPF.Data.ControlHandler.DataSource" /> property.</summary>
+    </member>
+    <member name="P:C1.WPF.Data.ControlHandler.DataSource">
+      <summary>
+            Gets or sets a <see cref="T:C1.WPF.Data.Entities.C1DataSource">data source</see> of the control handler.
+            </summary>
+      <remarks>
+            Setting this property is required if the GUI control is not bound directly to a C1DataSource. For example, it must be set
+            if the GUI control is bound to a <see cref="T:C1.LiveLinq.LiveViews.View">live view</see>.
+            </remarks>
+    </member>
+  </members>
+</doc>

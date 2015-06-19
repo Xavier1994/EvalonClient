@@ -21,20 +21,23 @@ namespace EvalonClient
     /// <summary>
     /// Course.xaml 的交互逻辑
     /// </summary>
-    public partial class CourseWindow : Window
+    public partial class CourseWindow : System.Windows.Window
     {
 
         private readonly string _studentid;
 
+        private readonly string _teacherid;
+
         public CourseWindow(string studentid)
         {
-            _studentid = studentid;
-            InitializeComponent();
+            this._studentid = studentid;
+            this.InitializeComponent();
         }
+
 
         private void Course_OnLoaded(object sender, RoutedEventArgs e)
         {
-            InitialContent();
+            this.InitialContent();
         }
 
 
@@ -56,7 +59,7 @@ namespace EvalonClient
                         t.TextAlignment = TextAlignment.Center;
                         Grid.SetColumn(t, (int)ct.Day);
                         Grid.SetRow(t, i);
-                        CourseTableView.Children.Add(t);
+                        this.CourseTableView.Children.Add(t);
                     }
                 }
             }
@@ -64,7 +67,7 @@ namespace EvalonClient
 
         private void RefleshClick(object sender, RoutedEventArgs e)
         {
-            InitialContent();
+            this.InitialContent();
         }
 
     }
